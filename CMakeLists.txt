@@ -35,7 +35,20 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(parada2 src/main.c )
+add_executable(parada2
+    src/main.c
+
+    src/communication/communication.c
+
+    src/drivers/i2c/i2c.c
+    src/drivers/SPI/spi.c
+    src/drivers/UART/uart.c
+
+    src/misc/blink.c
+
+    src/system/state_machine.c
+    src/system/system.c
+)
 
 pico_set_program_name(parada2 "parada2")
 pico_set_program_version(parada2 "0.1")

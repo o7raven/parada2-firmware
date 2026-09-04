@@ -17,7 +17,6 @@ int main(void)
         printf("System initialization failed with status: %d\n", status);
         return -1;
     }
-    system_run();
     for(;;){
 
     }

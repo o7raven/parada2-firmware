@@ -3,6 +3,7 @@
 
 #include "status.h"
 
+#include "misc/blink.h"
 #include "communication/communication.h"
 
 

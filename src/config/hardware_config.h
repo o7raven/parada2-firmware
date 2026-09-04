@@ -2,6 +2,8 @@
 #ifndef HARDWARE_CONFIG__H
 #define HARDWARE_CONFIG__H
 
+#define PIN_LED 25
+
 /* UART */
 // By default the stdout UART is `uart0`, so we will use the second one
 #define UART_ID uart1
