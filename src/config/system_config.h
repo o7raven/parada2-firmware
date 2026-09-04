@@ -1,0 +1,10 @@
+/* System Configuration */
+#ifndef SYSTEM_CONFIG__H
+#define SYSTEM_CONFIG__H
+
+#define FIRMWARE_VERSION "0.1"
+#define WATCHDOG_TIMEOUT_MS 1000
+#define TELEMETRY_INTERVAL_MS 1000
+#define SENSOR_PERIOD_MS 200
+
+#endif // SYSTEM_CONFIG__H
