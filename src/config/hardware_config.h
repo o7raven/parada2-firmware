@@ -17,6 +17,7 @@
 #define I2C_PORT i2c0
 #define I2C_SDA 8
 #define I2C_SCL 9
+#define I2C_BAUDRATE 400000
 
 /* SPI */
 #define SPI_PORT spi0
@@ -24,6 +25,8 @@
 #define PIN_CS   17
 #define PIN_SCK  18
 #define PIN_MOSI 19
+
+#define SPI_BAUDRATE 1000000
 
 /* RADIO */
 #endif // HARDWARE_CONFIG__H
