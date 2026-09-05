@@ -10,7 +10,6 @@
 #include "communication/logging.h"
 
 
-
 int main(void)
 {
     status_t sys_init_status = system_init();
@@ -21,6 +20,8 @@ int main(void)
             // Add recovery later
         }
     }
+
+    system_run();
 
     return STATUS_OK;
 }
