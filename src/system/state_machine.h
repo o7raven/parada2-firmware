@@ -31,6 +31,6 @@ typedef struct{
 } system_context_t;
 
 status_t state_machine_init(state_machine_t* state_machine, system_context_t* ctx);
-system_state_t state_machine_step(state_machine_t* state_machine, system_context_t* ctx);
+void state_machine_step(state_machine_t* state_machine, system_context_t* ctx);
 
 #endif //STATE_MACHINE__H
