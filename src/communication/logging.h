@@ -9,5 +9,6 @@ status_t logging_init(void);
 void log_info(const char* message);
 void log_warning(const char* message);
 void log_error(const char* message, status_t status);
+void log_success(const char* message);
 
 #endif // LOGGING__H
