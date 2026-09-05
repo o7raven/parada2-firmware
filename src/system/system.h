@@ -5,7 +5,7 @@
 
 #include "misc/blink.h"
 #include "communication/communication.h"
-
+#include "communication/logging.h"
 
 /* @brief Initializes the system and its components
  * @return STATUS_OK if initialization was successful, otherwise returns an error status
