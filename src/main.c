@@ -7,18 +7,19 @@
 
 #include "system/system.h"
 #include "system/status.h"
+#include "communication/logging.h"
 
 
 
 int main(void)
 {
-    status_t status = system_init();
-    if(status != STATUS_OK) {
-        printf("System initialization failed with status: %d\n", status);
-        return -1;
-    }
-    for(;;){
-
+    status_t sys_init_status = system_init();
+    if(sys_init_status != STATUS_OK) {
+        log_error("System initialization failed", sys_init_status);
+        for(;;){
+            // Stay here if system initialization fails
+            // Add recovery later
+        }
     }
 
     return STATUS_OK;
