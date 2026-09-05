@@ -39,6 +39,7 @@ add_executable(parada2
     src/main.c
 
     src/communication/communication.c
+    src/communication/logging.c
 
     src/drivers/i2c/i2c.c
     src/drivers/SPI/spi.c
