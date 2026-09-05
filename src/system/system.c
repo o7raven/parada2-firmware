@@ -35,6 +35,8 @@ status_t system_init(void){
     }
     log_info("State machine initialization successful");
 
+    // INIT WATCHDOG TIMER HERE !!!
+
     log_success("Initialization complete");
 
     return STATUS_OK;
@@ -43,6 +45,9 @@ status_t system_init(void){
 void system_run(void){
     log_info("Starting system run loop ...");
     while(1){
+        // Update system context here based on sensor readings, communication status, etc.
+        // communication, power, sensors with ctx
+
         switch(system_state_machine.current_state){
         case STATE_CHECK:
                 // Perform checks and update system context
@@ -60,9 +65,10 @@ void system_run(void){
                 log_error("Unknown state encountered", STATUS_ERROR);
                 break;
         }
-        // Update system context here based on sensor readings, communication status, etc.
 
+        // @Note : state_machine_step() only makes decisions about states
         state_machine_step(&system_state_machine, &system_ctx);
 
+        // UPDATE WATCHDOG TIMER HERE !!!
     }
 }
