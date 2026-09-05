@@ -2,9 +2,9 @@
 #define STATE_MACHINE__H
 
 #include "system/status.h"
-
+#include "stdint.h"
+#include "stdbool.h"
 typedef enum{
-    STATE_INIT,
     STATE_CHECK,
     STATE_RUN,
     STATE_SAFE,
@@ -14,9 +14,23 @@ typedef enum{
 typedef struct{
     system_state_t current_state;
     system_state_t previous_state;
+
+    uint32_t state_time_ms;
+    
 } state_machine_t;
 
-status_t state_machine_init(state_machine_t* state_machine);
-system_state_t state_machine_step(state_machine_t* state_machine);
+typedef struct{
+    bool sensors_ok;
+    bool radio_ok;
+    bool power_ok;
+
+    bool low_battery;
+    bool critical_fault;
+    bool gps_found;
+    bool radio_connected;
+} system_context_t;
+
+status_t state_machine_init(state_machine_t* state_machine, system_context_t* ctx);
+system_state_t state_machine_step(state_machine_t* state_machine, system_context_t* ctx);
 
 #endif //STATE_MACHINE__H
