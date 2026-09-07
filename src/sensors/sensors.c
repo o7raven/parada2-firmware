@@ -9,7 +9,6 @@ status_t init_sensors(sensors_t* sens_handler){
     return STATUS_OK; 
 }
 
-status_t read_sensors(sensors_t* sens_handler){
-    
+status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
     return STATUS_OK;
 }
