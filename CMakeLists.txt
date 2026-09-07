@@ -45,7 +45,11 @@ add_executable(parada2
     src/drivers/SPI/spi.c
     src/drivers/UART/uart.c
 
+    src/sensors/sensors.c
+    src/sensors/bme280.c
+
     src/misc/blink.c
+    src/misc/time_increment.c
 
     src/system/state_machine.c
     src/system/system.c
