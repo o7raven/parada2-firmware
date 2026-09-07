@@ -1,6 +1,4 @@
 #include "system.h"
-#include "communication/logging.h"
-#include "sensors/sensors.h"
 
 // TODO: Implement a custom error status for each error type
 status_t system_init(void) {
