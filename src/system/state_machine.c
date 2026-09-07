@@ -11,7 +11,7 @@ status_t state_machine_init(state_machine_t *state_machine,
   ctx->sensors_ok = false;
   ctx->power_ok = false;
   ctx->radio_ok = false;
-
+  reset_time(&(state_machine->state_time_ms));
   return STATUS_OK;
 }
 
@@ -63,5 +63,8 @@ void state_machine_step(state_machine_t *state_machine, system_context_t *ctx) {
     state_machine->previous_state = state_machine->current_state;
     state_machine->current_state = next_state;
     state_machine->state_time_ms = 0;
+    reset_time(&(state_machine->state_time_ms));
+  }else{
+    update_time(&(state_machine->state_time_ms));
   }
 }

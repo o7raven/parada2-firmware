@@ -6,6 +6,7 @@
 #include "stdbool.h"
 
 #include "communication/logging.h"
+#include "misc/time_increment.h"
 
 typedef enum{
     STATE_CHECK,
