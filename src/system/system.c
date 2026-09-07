@@ -47,6 +47,9 @@ status_t system_init(void){
     // INIT WATCHDOG TIMER HERE !!!
 
     log_success("Initialization complete");
+    log_info("State machine starting ... ");
+
+    state_machine_step(&system_state_machine, &system_ctx);
 
     return STATUS_OK;
 }
@@ -54,28 +57,33 @@ status_t system_init(void){
 void system_run(void){
     log_info("Starting system run loop ...");
     while(1){
-        // Update system context here based on sensor readings, communication status, etc.
-        // communication, power, sensors with ctx
+      // @Note create a task with instead of log every loop
+      log_info("In [%d] for %d ms", system_state_machine.current_state,
+               system_state_machine.state_time_ms);
 
-        read_sensors(&sensors);
+      // Update system context here based on sensor readings, communication
+      // status, etc. communication, power, sensors with ctx
 
-        switch(system_state_machine.current_state){
-        case STATE_CHECK:
-                // Perform checks and update system context
-                break;
-            case STATE_RUN:
-                // Perform normal operations
-                break;
-            case STATE_SAFE:
-                // Perform safe mode operations (Prob just less frequent data collection and telemtry)
-                break;
-            case STATE_ERROR:
-                // Handle error conditions
-                break;
-            default:
-                log_error("Unknown state encountered", STATUS_ERROR);
-                break;
-        }
+      read_sensors(&sensors, &system_ctx);
+
+      switch (system_state_machine.current_state) {
+      case STATE_CHECK:
+        // Perform checks and update system context
+        break;
+      case STATE_RUN:
+        // Perform normal operations
+        break;
+      case STATE_SAFE:
+        // Perform safe mode operations (Prob just less frequent data collection
+        // and telemtry)
+        break;
+      case STATE_ERROR:
+        // Handle error conditions
+        break;
+      default:
+        log_error("Unknown state encountered", STATUS_ERROR);
+        break;
+      }
 
         // @Note : state_machine_step() only makes decisions about states
         state_machine_step(&system_state_machine, &system_ctx);
