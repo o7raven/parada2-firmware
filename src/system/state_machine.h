@@ -4,6 +4,9 @@
 #include "system/status.h"
 #include "stdint.h"
 #include "stdbool.h"
+
+#include "communication/logging.h"
+
 typedef enum{
     STATE_CHECK,
     STATE_RUN,
