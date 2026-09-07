@@ -2,6 +2,7 @@
 #define SYSTEM__H
 
 #include "status.h"
+#include "sensors/sensors.h"
 
 #include "misc/blink.h"
 #include "communication/communication.h"
@@ -10,6 +11,7 @@
 
 static state_machine_t system_state_machine;
 static system_context_t system_ctx;
+static sensors_t sensors;
 
 /* @brief Initializes the system and its components
  * @return STATUS_OK if initialization was successful, otherwise returns an error status
