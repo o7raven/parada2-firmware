@@ -33,13 +33,13 @@ void state_machine_step(
             break;
 
         case STATE_RUN:
+          state_machine->previous_state = state_machine->current_state;
           if(ctx->critical_fault){
             next_state = STATE_ERROR;
           }
           if(ctx->low_battery){
             next_state = STATE_SAFE;
           }
-          next_state = STATE_RUN;
           break;
 
         case STATE_SAFE:
