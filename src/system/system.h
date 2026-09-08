@@ -9,6 +9,7 @@
 #include "communication/logging.h"
 #include "system/state_machine.h"
 #include "config/system_config.h"
+#include "communication/radio.h"
 
 #include "hardware/watchdog.h"
 

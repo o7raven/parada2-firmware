@@ -1,4 +1,5 @@
 #include "system.h"
+#include <hardware/watchdog.h>
 
 // TODO: Implement a custom error status for each error type
 status_t system_init(void) {
@@ -70,6 +71,7 @@ void system_run(void) {
     case STATE_RUN:
       read_sensors(&sensors, &system_ctx);
       // read gps, send data
+      data_send();
       break;
 
 
@@ -87,8 +89,7 @@ void system_run(void) {
 
     case STATE_ERROR:
       if (system_state_machine.state_time_ms > 30 * 1000) {
-        for (;;) {
-        }
+        watchdog_reboot(0, 0, 500);
       }
       break;
 
