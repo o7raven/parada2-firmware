@@ -3,7 +3,6 @@
 
 typedef enum {
   STATUS_OK = 0,
-  STATUS_DUMMY_ERROR,
   STATUS_ERROR,
   STATUS_TIMEOUT,
   STATUS_NOT_FOUND,
@@ -13,7 +12,10 @@ typedef enum {
   STATUS_SPI_ERROR,
   STATUS_UART_ERROR,
   STATUS_SENSOR_ERROR,
-  STATUS_SENSOR_NOT_FOUND
+  STATUS_SENSOR_NOT_FOUND,
+  STATUS_DUMMY_ERROR,
+  
+  STATUS_NOT_IMPLEMENTED
 } status_t;
 // Expand the status_t typedef and split different modules into their own enums;
 #endif //STATUS__H
