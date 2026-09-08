@@ -9,7 +9,7 @@ config:
   layout: elk
 ---
 stateDiagram
-  direction BT
+  direction TB
   state Run {
     direction TB
     [*] --> check_health
