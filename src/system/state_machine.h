@@ -9,7 +9,6 @@
 #include "misc/time_increment.h"
 
 typedef enum{
-    STATE_CHECK,
     STATE_RUN,
     STATE_SAFE,
     STATE_ERROR,

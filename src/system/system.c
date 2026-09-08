@@ -60,33 +60,48 @@ void system_run(void) {
     // Update system context here based on sensor readings, communication
     // status, etc. communication, power, sensors with ctx
 
-    switch (system_state_machine.current_state) {
-    case STATE_CHECK:
-      // Perform checks and update system context
-      sensors_check_health(&system_ctx);
+    sensors_check_health(&system_ctx);
 
-      break;
+    // @Note : state_machine_step() only makes decisions about states
+    state_machine_step(&system_state_machine, &system_ctx);
+
+    switch (system_state_machine.current_state) {
+
     case STATE_RUN:
       read_sensors(&sensors, &system_ctx);
       // read gps, send data
       break;
+
+
+
+
     case STATE_SAFE:
       // Perform safe mode operations (Prob just less frequent data collection
       // and telemtry)
       break;
+
+
+
+
+
+
     case STATE_ERROR:
       if (system_state_machine.state_time_ms > 30 * 1000) {
-        for (;;){
+        for (;;) {
         }
       }
       break;
+
+
+
+
+
+
     default:
       log_error("Unknown state encountered", STATUS_ERROR);
       break;
     }
 
-    // @Note : state_machine_step() only makes decisions about states
-    state_machine_step(&system_state_machine, &system_ctx);
 
     // @Watchdog
     watchdog_update();
