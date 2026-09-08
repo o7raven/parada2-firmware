@@ -1,5 +1,4 @@
 #include "state_machine.h"
-#include "communication/logging.h"
 
 status_t state_machine_init(state_machine_t *state_machine,
                             system_context_t *ctx) {
