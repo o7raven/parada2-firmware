@@ -1,8 +1,9 @@
 # Todo
 
 
-- Implement a hardware watchdog timer
+- Watchdog timer
 - Write drivers for modules
 - Radio implementation
-- State MS logging
-- 
+
+- System simulation with dummy data
+  
