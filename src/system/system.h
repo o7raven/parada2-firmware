@@ -8,6 +8,9 @@
 #include "communication/communication.h"
 #include "communication/logging.h"
 #include "system/state_machine.h"
+#include "config/system_config.h"
+
+#include "hardware/watchdog.h"
 
 static state_machine_t system_state_machine;
 static system_context_t system_ctx;

@@ -41,7 +41,8 @@ status_t system_init(void) {
   }
   log_success("State machine initialization successful");
 
-  // INIT WATCHDOG TIMER HERE !!!
+  // @Watchdog
+  watchdog_enable(WATCHDOG_TIMEOUT_MS, WATCHDOG_PAUSE_ON_DBG);
 
   log_success("Initialization complete");
   log_info("State machine starting ... ");
@@ -62,11 +63,12 @@ void system_run(void) {
     switch (system_state_machine.current_state) {
     case STATE_CHECK:
       // Perform checks and update system context
+      sensors_check_health(&system_ctx);
+
       break;
     case STATE_RUN:
       read_sensors(&sensors, &system_ctx);
       // read gps, send data
-      // Perform normal operations
       break;
     case STATE_SAFE:
       // Perform safe mode operations (Prob just less frequent data collection
@@ -75,6 +77,7 @@ void system_run(void) {
     case STATE_ERROR:
       if (system_state_machine.state_time_ms > 30 * 1000) {
         for (;;){
+        }
       }
       break;
     default:
@@ -85,6 +88,7 @@ void system_run(void) {
     // @Note : state_machine_step() only makes decisions about states
     state_machine_step(&system_state_machine, &system_ctx);
 
-    // UPDATE WATCHDOG TIMER HERE !!!
+    // @Watchdog
+    watchdog_update();
   }
 }
