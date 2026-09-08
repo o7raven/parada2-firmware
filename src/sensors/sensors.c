@@ -1,6 +1,4 @@
 #include "sensors.h"
-#include "sensors/bme280.h"
-#include "system/status.h"
 
 status_t init_sensors(sensors_t* sens_handler){
     configure_bme280(
