@@ -13,4 +13,6 @@ status_t init_sensors(sensors_t* sens_handler);
 
 status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx);
 
+status_t sensors_check_health(system_context_t* ctx);
+
 #endif // _SENSORS__H
