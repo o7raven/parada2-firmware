@@ -1,0 +1,96 @@
+@startuml
+hide empty description
+
+top to bottom direction
+
+skinparam backgroundColor white
+
+skinparam state {
+    BackgroundColor #F8F9FA
+    BorderColor #495057
+    ArrowColor #495057
+    FontColor #212529
+    FontSize 14
+    AttributeFontSize 12
+    RoundCorner 15
+}
+
+skinparam state<<run>> {
+    BackgroundColor #E8F5E9
+    BorderColor #43A047
+}
+
+skinparam state<<safe>> {
+    BackgroundColor #FFF8E1
+    BorderColor #F9A825
+}
+
+skinparam state<<error>> {
+    BackgroundColor #FFEBEE
+    BorderColor #E53935
+}
+
+' =========================================================
+' Start / context / watchdog cycle
+' =========================================================
+
+[*] --> update_context
+
+state "Update Context" as update_context
+state "State Machine Step" as state_machine_step
+state "Watchdog Update" as watchdog_update
+
+update_context --> StateMachine
+StateMachine --> state_machine_step
+state_machine_step --> watchdog_update
+watchdog_update --> update_context
+
+
+' =========================================================
+' Main state machine
+' =========================================================
+
+state "State Machine" as StateMachine {
+
+    state "RUN" as Run <<run>> {
+        state "Read Sensors" as read_sensors
+        state "Get Location" as get_location
+        state "Send Data" as send_data
+
+        read_sensors --> get_location
+        get_location --> send_data
+        send_data --> read_sensors
+    }
+
+    state "SAFE" as Safe <<safe>> {
+        state "Check Issues" as check_issues
+        state "Read Sensors (Safe)" as read_sensors_safe
+        state "Send Data (Safe)" as send_data_safe
+
+        check_issues --> read_sensors_safe
+        read_sensors_safe --> send_data_safe
+        send_data_safe --> check_issues
+    }
+
+    state "ERROR" as Error <<error>> {
+        state "Report Error" as report
+        state "Reboot System with Error Flag" as reboot
+
+        report --> reboot
+    }
+
+    ' -----------------------------------------------------
+    ' Actual state logic
+    ' -----------------------------------------------------
+
+    [*] --> Run : context_ok
+    [*] --> Safe : context_fail
+
+    Run --> Safe : Power issues
+    Run --> Error : Fatal system failure
+
+    Safe --> Run : Issues resolved
+    Safe --> Error : Critical system failure
+}
+
+@enduml
