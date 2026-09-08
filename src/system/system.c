@@ -74,8 +74,7 @@ void system_run(void) {
       break;
     case STATE_ERROR:
       if (system_state_machine.state_time_ms > 30 * 1000) {
-        for (;;)
-          ;
+        for (;;){
       }
       break;
     default:
