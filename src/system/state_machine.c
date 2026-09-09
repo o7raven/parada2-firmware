@@ -22,8 +22,7 @@ void state_machine_step(state_machine_t *state_machine, system_context_t *ctx) {
   case STATE_RUN:
     if (ctx->critical_fault) {
       next_state = STATE_ERROR;
-    }
-    if (ctx->low_battery || ctx->power_ok) {
+    }else if(ctx->low_battery || ctx->power_ok) {
       next_state = STATE_SAFE;
     }
     break;
@@ -31,8 +30,7 @@ void state_machine_step(state_machine_t *state_machine, system_context_t *ctx) {
   case STATE_SAFE:
     if (ctx->critical_fault) {
       next_state = STATE_ERROR;
-    }
-    if (!ctx->low_battery) {
+    }else if (!ctx->low_battery) {
       next_state = STATE_RUN;
     }
     break;
