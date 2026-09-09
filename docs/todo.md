@@ -1,7 +1,7 @@
 # Todo
 
+- move blink into log func
 
-- Watchdog timer
 - Write drivers for modules
 - Radio implementation
 
