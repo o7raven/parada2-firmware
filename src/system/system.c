@@ -1,5 +1,5 @@
 #include "system.h"
-#include <hardware/watchdog.h>
+#include "drivers/GPS/gps.h"
 
 // TODO: Implement a custom error status for each error type
 status_t system_init(void) {
@@ -70,8 +70,8 @@ void system_run(void) {
 
     case STATE_RUN:
       read_sensors(&sensors, &system_ctx);
-      // read gps, send data
-      data_send();
+      get_location(&gps_data);
+      data_send(&sensors, &gps_data);
       break;
 
 
