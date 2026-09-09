@@ -45,6 +45,7 @@ add_executable(parada2
     src/drivers/i2c/i2c.c
     src/drivers/SPI/spi.c
     src/drivers/UART/uart.c
+    src/drivers/GPS/gps.c
 
     src/sensors/sensors.c
     src/sensors/bme280.c
