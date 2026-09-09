@@ -3,6 +3,7 @@
 
 #include "system/status.h"
 #include "pico/stdio.h"
+#include "misc/blink.h"
 #include "stdio.h"
 status_t logging_init(void);
 

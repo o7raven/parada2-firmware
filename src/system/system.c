@@ -1,6 +1,4 @@
 #include "system.h"
-#include "communication/logging.h"
-#include "drivers/GPS/gps.h"
 
 // TODO: Implement a custom error status for each error type
 status_t system_init(void) {
@@ -13,14 +11,6 @@ status_t system_init(void) {
   log_success("Success log working");
 
   log_info("Starting system initialization ...");
-
-  init_status = blink_init();
-  if (init_status != STATUS_OK) {
-    log_error("Blink initialization failed", init_status);
-    return STATUS_ERROR;
-  }
-  log_success("Blink initialization successful");
-  blink(300, 3);
 
   init_status = communication_init();
   if (init_status != STATUS_OK) {
@@ -80,7 +70,7 @@ void system_run(void) {
     case STATE_RUN:
       read_sensors(&sensors, &system_ctx);
       get_location(&gps_data, &system_ctx);
-      data_send(&sensors, &gps_data);
+      data_send(&sensors, &gps_data, &system_ctx);
       break;
 
 
