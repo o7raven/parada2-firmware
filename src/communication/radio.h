@@ -13,5 +13,7 @@ typedef struct{
 packet_t create_packet(void);
 status_t data_send(sensors_t* _s_handler, gps_t* _gps_handler);
 
+status_t init_radio(system_context_t* ctx);
+
 #define _RAIDIO__H_
 #endif // _RADIO__H_
