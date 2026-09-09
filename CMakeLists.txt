@@ -46,15 +46,16 @@ add_executable(parada2
     src/drivers/SPI/spi.c
     src/drivers/UART/uart.c
     src/drivers/GPS/gps.c
+    src/drivers/bme_280/bme280.c
 
     src/sensors/sensors.c
-    src/sensors/bme280.c
 
     src/misc/blink.c
     src/misc/time_increment.c
 
     src/system/state_machine.c
     src/system/system.c
+
 )
 
 pico_set_program_name(parada2 "parada2")
