@@ -7,11 +7,14 @@
 #include "system/state_machine.h"
 
 
-typedef struct{
+typedef struct __attribute__((packed)){
+    uint32_t packet_id
 
 } packet_t;
 
-packet_t create_packet(void);
+packet_t create_packet(sensors_t* sensors, gps_t* gps, system_context_t* ctx);
+
+status_t send_packet(packet_t* create_packet);
 status_t data_send(sensors_t* _s_handler, gps_t* _gps_handler, system_context_t* _ctx_handler);
 
 status_t init_radio(system_context_t* ctx);
