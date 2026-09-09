@@ -1,4 +1,5 @@
 #include "system.h"
+#include "communication/logging.h"
 #include "drivers/GPS/gps.h"
 
 // TODO: Implement a custom error status for each error type
@@ -24,21 +25,27 @@ status_t system_init(void) {
   init_status = communication_init();
   if (init_status != STATUS_OK) {
     log_error("Communication initialization failed", init_status);
-    return STATUS_ERROR;
+    return init_status;
   }
   log_success("Communication initialization successful");
 
-  init_status = init_sensors(&sensors);
+  init_status = init_sensors(&sensors, &system_ctx);
   if (init_status != STATUS_OK) {
     log_error("Sensors initialization failed", init_status);
-    return STATUS_ERROR;
+    return init_status;
   }
   log_success("Sensors initialization successful");
 
-  init_status = state_machine_init(&system_state_machine, &system_ctx);
+  init_status = gps_init(&gps_data, &system_ctx);
+  if(init_status != STATUS_OK){
+    log_error("GPS initialization failed", init_status);
+    return init_status;
+  }
+
+  init_status = state_machine_init(&system_state_machine);
   if (init_status != STATUS_OK) {
     log_error("State machine initialization failed", init_status);
-    return STATUS_ERROR;
+    return init_status;
   }
   log_success("State machine initialization successful");
 
@@ -61,29 +68,26 @@ void system_run(void) {
     // Update system context here based on sensor readings, communication
     // status, etc. communication, power, sensors with ctx
 
-    sensors_check_health(&system_ctx);
+
+
 
     // @Note : state_machine_step() only makes decisions about states
     state_machine_step(&system_state_machine, &system_ctx);
 
     switch (system_state_machine.current_state) {
 
+    // @Note : each func updates its own context -> removes the need for a global update_context function
     case STATE_RUN:
       read_sensors(&sensors, &system_ctx);
-      get_location(&gps_data);
+      get_location(&gps_data, &system_ctx);
       data_send(&sensors, &gps_data);
       break;
-
-
 
 
     case STATE_SAFE:
       // Perform safe mode operations (Prob just less frequent data collection
       // and telemtry)
       break;
-
-
-
 
 
 
