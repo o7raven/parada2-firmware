@@ -3,6 +3,7 @@
 
 #include "system/status.h"
 #include "inttypes.h"
+#include "system/state_machine.h"
 
 typedef struct{
     uint8_t valid;
@@ -12,6 +13,8 @@ typedef struct{
 
 } gps_t;
 
-status_t get_location(gps_t* gps_handler);
+status_t gps_init(gps_t* gps_handler, system_context_t* ctx);
+status_t get_location(gps_t* gps_handler, system_context_t* ctx);
+
 
 #endif // _GPS__H
