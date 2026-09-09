@@ -47,6 +47,9 @@ add_executable(parada2
     src/drivers/UART/uart.c
     src/drivers/GPS/gps.c
     src/drivers/bme_280/bme280.c
+    src/drivers/IMU/imu.c
+    src/drivers/hmc5883l/hmc5883l.c
+
 
     src/sensors/sensors.c
 
