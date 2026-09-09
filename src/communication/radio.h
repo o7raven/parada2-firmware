@@ -8,7 +8,7 @@
 
 
 typedef struct __attribute__((packed)){
-    uint32_t packet_id
+    uint32_t packet_id;
 
 } packet_t;
 
