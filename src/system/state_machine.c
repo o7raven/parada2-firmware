@@ -1,16 +1,14 @@
 #include "state_machine.h"
+#include "sensors/sensors.h"
 
-status_t state_machine_init(state_machine_t *state_machine,
-                            system_context_t *ctx) {
+
+status_t state_machine_init(state_machine_t *state_machine) {
   // @Note maybe deafault to assume state_safe?
   state_machine->current_state = STATE_RUN;
   state_machine->previous_state = STATE_RUN;
 
   state_machine->state_time_ms = 0;
 
-  ctx->sensors_ok = false;
-  ctx->power_ok = false;
-  ctx->radio_ok = false;
   reset_time(&(state_machine->state_time_ms));
   return STATUS_OK;
 }
