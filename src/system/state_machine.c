@@ -3,6 +3,7 @@
 
 
 status_t state_machine_init(state_machine_t *state_machine) {
+  sm_changed = true;
   // @Note maybe deafault to assume state_safe?
   state_machine->current_state = STATE_RUN;
   state_machine->previous_state = STATE_RUN;
@@ -52,8 +53,19 @@ void state_machine_step(state_machine_t *state_machine, system_context_t *ctx) {
     state_machine->previous_state = state_machine->current_state;
     state_machine->current_state = next_state;
     state_machine->state_time_ms = 0;
+
+    sm_changed=true;
+
     reset_time(&(state_machine->state_time_ms));
   } else {
     update_time(&(state_machine->state_time_ms));
   }
+}
+
+bool state_machine_changed(void){
+  if(sm_changed == true){
+    sm_changed = false;
+    return true;
+  }
+  return false;
 }
