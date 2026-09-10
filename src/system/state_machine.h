@@ -33,8 +33,11 @@ typedef struct{
     bool radio_connected;
 } system_context_t;
 
+static bool sm_changed;
+
 status_t state_machine_init(state_machine_t* state_machine);
 void state_machine_step(state_machine_t* state_machine, system_context_t* ctx);
 
+bool state_machine_changed(void);
 
 #endif //STATE_MACHINE__H
