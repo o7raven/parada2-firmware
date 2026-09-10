@@ -4,6 +4,8 @@
 #include "system/status.h"
 #include "inttypes.h"
 #include "system/state_machine.h"
+#include "hardware/uart.h"
+#include "config/hardware_config.h"
 
 typedef struct{
     uint8_t valid;
