@@ -1,4 +1,5 @@
 #include "system.h"
+#include "communication/logging.h"
 #include "communication/radio.h"
 #include "config/system_config.h"
 #include "system/state_machine.h"
@@ -61,8 +62,10 @@ bool radio_callback(struct repeating_timer *t) {
 }
 void create_radio_timer(system_state_t state) {
   if (radio_callback_is_running) {
+    log_info("Callback is already running, cancelling");
     cancel_repeating_timer(&radio_timer);
   }
+  log_info("Adding a repeating timer in state: %d", state);
   switch (state) {
   case STATE_RUN:
     add_repeating_timer_ms(RUN_STATE_PACKET_FREQUENCY_ms, &radio_callback,
@@ -95,9 +98,11 @@ void system_run(void) {
 
     // @Note : state_machine_step() only makes decisions about states
     state_machine_step(&system_state_machine, &system_ctx);
+
     system_work();
 
     if(radio_is_due){
+      log_info("Radio transmission is due");
       radio_is_due = false;
       send_data(&sensors, &gps_data, &system_ctx);
     }

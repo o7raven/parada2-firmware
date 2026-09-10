@@ -1,8 +1,10 @@
 #include "radio.h"
+#include "communication/logging.h"
 #include "system/state_machine.h"
 #include "system/status.h"
 
 packet_t create_packet(sensors_t* sensors, gps_t* gps, system_context_t* ctx){
+    log_info("Creating a packet");
     packet_t _packet;
 
     return _packet;
@@ -24,6 +26,7 @@ status_t init_radio(system_context_t* ctx){
 }
 
 status_t send_packet(packet_t* create_packet){
+    log_info("Sending a packet");
     return STATUS_NOT_IMPLEMENTED;
 
 }
