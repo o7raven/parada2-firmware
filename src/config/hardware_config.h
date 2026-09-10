@@ -6,12 +6,11 @@
 
 /* UART */
 // By default the stdout UART is `uart0`, so we will use the second one
-#define UART_ID uart1
+#define UART_ID uart0
 #define BAUD_RATE 115200
 
-#define UART_TX_PIN 4
-#define UART_RX_PIN 5
-
+#define UART_TX_PIN 0
+#define UART_RX_PIN 1
 
 /* I2C*/
 // This example will use I2C0 on GPIO8 (SDA) and GPIO9 (SCL) running at 400KHz.
@@ -32,3 +31,11 @@
 
 /* RADIO */
 #endif // HARDWARE_CONFIG__H
+
+
+/* GPS */
+
+#define GPS_UART uart1
+#define GPS_TX 8
+#define GPS_RX 9
+#define GPS_BAUD 9600
