@@ -86,8 +86,8 @@ void create_radio_timer(system_state_t state) {
 
 void system_run(void) {
   log_info("Starting system run loop ...");
-  while (1) {
 
+  while (1) {
     if(state_machine_changed()){
       create_radio_timer(system_state_machine.current_state);
     }
@@ -98,7 +98,6 @@ void system_run(void) {
 
     // @Note : state_machine_step() only makes decisions about states
     state_machine_step(&system_state_machine, &system_ctx);
-
     system_work();
 
     if(radio_is_due){
