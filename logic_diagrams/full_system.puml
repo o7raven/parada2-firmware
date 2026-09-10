@@ -1,0 +1,76 @@
+@startuml
+title System Run Loop and Radio Timer Logic
+
+start
+
+:System starts system_run();
+:Log "Starting system run loop ...";
+
+while (system is running?) is (yes)
+
+    if (state_machine_changed()?) then (yes)
+        :create_radio_timer(current_state);
+
+        if (radio_callback_is_running?) then (yes)
+            :Log "Callback is already running";
+            :cancel_repeating_timer(radio_timer);
+        endif
+
+        :Log current state;
+
+        switch (current_state)
+            case (STATE_RUN)
+                :add_repeating_timer_ms(
+                RUN_STATE_PACKET_FREQUENCY_ms,
+                radio_callback,
+                false,
+                radio_timer);
+            case (STATE_SAFE)
+                :add_repeating_timer_ms(
+                SAFE_STATE_PACKET_FREQUENCY_ms,
+                radio_callback,
+                false,
+                radio_timer);
+            case (STATE_ERROR)
+                :cancel_repeating_timer(radio_timer);
+                :radio_callback_is_running = false;
+            case (default)
+                :Do nothing;
+        endswitch
+    endif
+
+    :Log current state and state time;
+
+    :state_machine_step(
+    &system_state_machine,
+    &system_ctx);
+
+    :system_work();
+
+    partition "system_work()" {
+        :read_sensors(
+        &sensors,
+        &system_ctx);
+
+        :get_location(
+        &gps_data,
+        &system_ctx);
+    }
+
+    if (radio_is_due?) then (yes)
+        :Log "Radio transmission is due";
+        :radio_is_due = false;
+
+        :send_data(
+        &sensors,
+        &gps_data,
+        &system_ctx);
+    endif
+
+    :sleep_ms(DATA_COLLECTION_PERIOD_ms);
+    :watchdog_update();
+
+endwhile (no)
+
+stop
+@enduml
