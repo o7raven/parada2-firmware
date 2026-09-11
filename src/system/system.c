@@ -76,6 +76,7 @@ void create_radio_timer(system_state_t state) {
     radio_callback_is_running = false;
     break;
   default:
+    log_warning("Entered unknown state");
     break;
   }
 }
