@@ -5,7 +5,6 @@
 #include "system/state_machine.h"
 #include <pico/time.h>
 
-// TODO: Implement a custom error status for each error type
 status_t system_init(void) {
   status_t init_status = STATUS_OK;
 
@@ -30,20 +29,17 @@ status_t system_init(void) {
   init_status = init_sensors(&sensors, &system_ctx);
   if (init_status != STATUS_OK) {
     log_error("Sensors initialization failed", init_status);
-    return init_status;
   }
   log_success("Sensors initialization successful");
 
   init_status = gps_init(&gps_data, &system_ctx);
   if (init_status != STATUS_OK) {
     log_error("GPS initialization failed", init_status);
-    return init_status;
   }
 
   init_status = state_machine_init(&system_state_machine);
   if (init_status != STATUS_OK) {
     log_error("State machine initialization failed", init_status);
-    return init_status;
   }
   log_success("State machine initialization successful");
 
