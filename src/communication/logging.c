@@ -1,4 +1,5 @@
 #include "logging.h"
+#include "config/system_config.h"
 #include "misc/blink.h"
 
 status_t logging_init(void){
@@ -20,18 +21,18 @@ void log_info(const char* message, ...){
 
     va_end(args);
 
-    blink(100, 1);
+    blink(LOG_BLINK_ms, 1);
 }
 void log_warning(const char* message){
     printf("[\033[33mWARNING\033[0m]: %s\n", message);
-    blink(100, 1);
+    blink(LOG_BLINK_ms, 1);
 }
 void log_error(const char* message, status_t status){
     printf("[\033[31mERROR\033[0m]: %s (Status: %d)\n", message, status);
-    blink(100, 1);
+    blink(LOG_BLINK_ms, 1);
 }
 
 void log_success(const char* message){
     printf("[\033[32mSUCCESS\033[0m]: %s\n", message);
-    blink(100, 1);
+    blink(LOG_BLINK_ms, 1);
 }
