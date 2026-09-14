@@ -3,9 +3,22 @@
 #include "communication/radio.h"
 #include "config/system_config.h"
 #include "system/state_machine.h"
+#include "system/status.h"
 #include <pico/time.h>
 
+volatile bool radio_is_due = false;
+repeating_timer_t radio_timer;
+bool radio_callback_is_running = false;
+
 status_t system_init(void) {
+
+  // @Note debugging purposes (remove later)
+  system_ctx.power_ok = true;
+  system_ctx.low_battery = false; 
+  system_ctx.critical_fault = false;
+
+
+
   status_t init_status = STATUS_OK;
 
   radio_is_due = false;
@@ -23,25 +36,33 @@ status_t system_init(void) {
   if (init_status != STATUS_OK) {
     log_error("Communication initialization failed", init_status);
     return init_status;
+  }else{
+    log_success("Communication initialization successful");
   }
-  log_success("Communication initialization successful");
 
   init_status = init_sensors(&sensors, &system_ctx);
   if (init_status != STATUS_OK) {
     log_error("Sensors initialization failed", init_status);
   }
-  log_success("Sensors initialization successful");
+  else{
+    log_success("Sensors initialization successful");
+  }
 
   init_status = gps_init(&gps_data, &system_ctx);
   if (init_status != STATUS_OK) {
     log_error("GPS initialization failed", init_status);
+  }
+  else{
+    log_success("GPS initialization successful");
   }
 
   init_status = state_machine_init(&system_state_machine);
   if (init_status != STATUS_OK) {
     log_error("State machine initialization failed", init_status);
   }
-  log_success("State machine initialization successful");
+  else{
+    log_success("State machine initialization successful");
+  }
 
   // @Watchdog
   watchdog_enable(WATCHDOG_TIMEOUT_ms+DATA_COLLECTION_PERIOD_ms, WATCHDOG_PAUSE_ON_DBG);
@@ -51,6 +72,7 @@ status_t system_init(void) {
 
   return STATUS_OK;
 }
+
 
 bool radio_callback(struct repeating_timer *t) {
   radio_is_due = true;
@@ -63,12 +85,13 @@ void create_radio_timer(system_state_t state) {
   }
   log_info("Adding a repeating timer in state: %d", state);
   switch (state) {
+    // duplicity fix later
   case STATE_RUN:
-    add_repeating_timer_ms(RUN_STATE_PACKET_FREQUENCY_ms, &radio_callback,
+    radio_callback_is_running = add_repeating_timer_ms(RUN_STATE_PACKET_FREQUENCY_ms, &radio_callback,
                            false, &radio_timer);
     break;
   case STATE_SAFE:
-    add_repeating_timer_ms(SAFE_STATE_PACKET_FREQUENCY_ms, &radio_callback,
+    radio_callback_is_running = add_repeating_timer_ms(SAFE_STATE_PACKET_FREQUENCY_ms, &radio_callback,
                            false, &radio_timer);
     break;
   case STATE_ERROR:
@@ -78,6 +101,11 @@ void create_radio_timer(system_state_t state) {
   default:
     log_warning("Entered unknown state");
     break;
+  }
+  if(radio_callback_is_running){
+    log_success("Interrupt created sucessfully");
+  }else{
+    log_error("There has been an error creating the interrupt",STATUS_ERROR);
   }
 }
 

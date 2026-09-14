@@ -20,9 +20,9 @@ static system_context_t system_ctx;
 static sensors_t sensors;
 static gps_t gps_data;
 
-static volatile bool radio_is_due;
-static repeating_timer_t radio_timer;
-static bool radio_callback_is_running;
+extern volatile bool radio_is_due;
+extern repeating_timer_t radio_timer;
+extern bool radio_callback_is_running;
 
 /* @brief Initializes the system and its components
  * @return STATUS_OK if initialization was successful, otherwise returns an error status
