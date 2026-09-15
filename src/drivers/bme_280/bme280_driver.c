@@ -7,6 +7,10 @@
 #include <pico/time.h>
 #include <stdint.h>
 
+static struct bme280_dev dev;
+static uint32_t period;
+static uint8_t dev_addr = BME280_I2C_ADDR_PRIM;
+
 
 
 // @Note add proper error handling
@@ -20,8 +24,7 @@ status_t configure_bme280(){
     dev.read = bme280_i2c_read;
     dev.write = bme280_i2c_write;
 
-    uint8_t dev_addr = BME280_I2C_ADDR_PRIM;
-    dev.intf = dev_addr;
+    dev.intf = BME280_I2C_INTF;
     dev.intf_ptr = &dev_addr;
 
     dev.delay_us = bme280_delay_us;
@@ -82,23 +85,37 @@ void bme280_delay_us(uint32_t period, void *intf_ptr){
 }
 BME280_INTF_RET_TYPE bme280_i2c_write(uint8_t reg_addr, const uint8_t *reg_data,
                                       uint32_t length, void *intf_ptr) {
-  abstract_i2c_write(reg_addr, reg_data, length, *(uint8_t *)intf_ptr);
+  status_t result = abstract_i2c_write(reg_addr, reg_data, length, *(uint8_t *)intf_ptr);
+  if(result != STATUS_OK){
+    return BME280_E_COMM_FAIL;
+  }
   return BME280_INTF_RET_SUCCESS;
 }
 
 BME280_INTF_RET_TYPE bme280_i2c_read(uint8_t reg_addr, uint8_t *reg_data,
                                      uint32_t length, void *intf_ptr) {
-  abstract_i2c_read(reg_addr, reg_data, length, *(uint8_t *)intf_ptr);
+  status_t result = abstract_i2c_read(reg_addr, reg_data, length, *(uint8_t *)intf_ptr);
+  if(result != STATUS_OK){
+    return BME280_E_COMM_FAIL;
+  }
   return BME280_INTF_RET_SUCCESS;
 }
 
 status_t bme280_scan(struct bme280_data* comp_data){
     uint8_t status_reg;
 
-    bme280_get_regs(BME280_REG_STATUS, &status_reg, 1, &dev);
+    uint8_t rslt = bme280_get_regs(BME280_REG_STATUS, &status_reg, 1, &dev);
+    if(rslt != BME280_OK){
+        log_error("get reg error",STATUS_SENSOR_ERROR_BME_READ);
+        return STATUS_ERROR;
+    }
     if(status_reg & BME280_STATUS_MEAS_DONE){
-        bme280_get_sensor_data(BME280_TEMP | BME280_HUM | BME280_PRESS,
+        uint8_t rslt = bme280_get_sensor_data(BME280_TEMP | BME280_HUM | BME280_PRESS,
                                comp_data, &dev);
+        if(rslt != BME280_OK){
+            log_error("read not ok",STATUS_SENSOR_ERROR_BME_READ);
+            return STATUS_SENSOR_ERROR_BME_READ;
+        }
     }
     // add prorper erroer handling
     return STATUS_OK;
