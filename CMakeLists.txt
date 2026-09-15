@@ -59,6 +59,8 @@ add_executable(parada2
     src/system/state_machine.c
     src/system/system.c
 
+    libs/bosch/bme280.c
+
 )
 
 pico_set_program_name(parada2 "parada2")
@@ -75,6 +77,7 @@ target_link_libraries(parada2
 # Add the standard include files to the build
 target_include_directories(parada2 PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/src
+        ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
