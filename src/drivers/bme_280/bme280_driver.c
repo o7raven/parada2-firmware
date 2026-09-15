@@ -11,6 +11,8 @@
 
 // @Note add proper error handling
 void configure_bme280(){
+    uint8_t rslt;
+
     struct bme280_settings settings;
     log_info("Configuring bme280 ...");
     
@@ -25,12 +27,19 @@ void configure_bme280(){
     dev.delay_us = bme280_delay_us;
 
     //sleep before config
-    bme280_init(&dev);
+    rslt = bme280_init(&dev);
+    if(rslt!= BME280_OK){
+        log_error("BME280 initialization failed", STATUS_SENSOR_ERROR_BME_CONFIG);
+        return;
+    }
     sleep_ms(100);
 
 
 
-    bme280_get_sensor_settings(&settings, &dev);
+    rslt = bme280_get_sensor_settings(&settings, &dev);
+    if(rslt!= BME280_OK){
+        log_error("Failed to GET BME280 settings", STATUS_SENSOR_ERROR_BME_CONFIG);
+    }
     settings.filter = BME280_FILTER_COEFF_2;
     settings.osr_h = BME280_OVERSAMPLING_1X;
     settings.osr_p = BME280_OVERSAMPLING_1X;
@@ -38,10 +47,25 @@ void configure_bme280(){
 
     settings.standby_time = BME280_STANDBY_TIME_0_5_MS;
 
-    bme280_set_sensor_settings(BME280_SEL_ALL_SETTINGS, &settings, &dev);
+    rslt = bme280_set_sensor_settings(BME280_SEL_ALL_SETTINGS, &settings, &dev);
+    if(rslt!= BME280_OK){
+        log_error("Failed to SET BME280 settings", STATUS_SENSOR_ERROR_BME_CONFIG);
+        return;
+    }
 
-    bme280_set_sensor_mode(BME280_POWERMODE_NORMAL, &dev);
-    bme280_cal_meas_delay(&period, &settings);
+    rslt = bme280_set_sensor_mode(BME280_POWERMODE_NORMAL, &dev);
+
+    if(rslt != BME280_OK){
+        log_error("Failed to SET BME280 sensor mode", STATUS_SENSOR_ERROR_BME_CONFIG);
+        return;
+    }
+
+    rslt = bme280_cal_meas_delay(&period, &settings);
+
+    if(rslt != BME280_OK){
+        log_error("Failed to calculate measurement delay", STATUS_SENSOR_ERROR_BME_CONFIG);
+        return;
+    }
 
     log_info("Measurement time: %lu us", period);
 
