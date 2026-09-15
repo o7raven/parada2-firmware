@@ -12,4 +12,7 @@
 
 status_t abstract_i2c_init(void);
 
+status_t abstract_i2c_write(uint8_t DEV,uint8_t REG, char* BUFFER);
+status_t abstract_i2c_read(uint8_t DEV, uint8_t REG, char* BUFFER);
+
 #endif //I2C__H
