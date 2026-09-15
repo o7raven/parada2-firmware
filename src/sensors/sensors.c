@@ -29,7 +29,13 @@ status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
     if(bme280_scan(&sens_handler->bme280) != STATUS_OK){
         log_error("Read error", STATUS_SENSOR_ERROR_BME_READ);
     }
-    log_info("BME temp: %lf C | press: %lf | hum: %lf", sens_handler->bme280.temperature, sens_handler->bme280.pressure, sens_handler->bme280.humidity);
+    if(sens_handler == NULL){
+        log_error("Sens handler is null", STATUS_I2C_ERROR);
+    }
+    log_info("Bme: %f", sens_handler->bme280.temperature);
+    log_info("pressure: %f", sens_handler->bme280.pressure);
+    log_info("humidity: %f", sens_handler->bme280.humidity);
+
     /*if(read_hmc(&sens_handler->hmc) != STATUS_OK){
         log_error("Read error",STATUS_SENSOR_ERROR_HMC_READ);
     }
