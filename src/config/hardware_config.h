@@ -13,7 +13,7 @@
 #define UART_RX_PIN 1
 
 /* I2C*/
-#define I2C_PORT i2c0
+#define I2C_PORT i2c1
 #define I2C_SDA 26
 #define I2C_SCL 27
 #define I2C_BAUDRATE 400000
