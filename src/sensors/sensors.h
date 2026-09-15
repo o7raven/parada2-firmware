@@ -8,7 +8,7 @@
 #include "drivers/IMU/imu.h"
 
 typedef struct {
-   bme280_t bme280; 
+   struct bme280_data bme280; 
    hmc5883l_t hmc;
    imu_t imu;
 } sensors_t;
