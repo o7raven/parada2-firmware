@@ -12,7 +12,8 @@
 
 status_t abstract_i2c_init(void);
 
-status_t abstract_i2c_write(uint8_t DEV,uint8_t REG, char* BUFFER);
-status_t abstract_i2c_read(uint8_t DEV, uint8_t REG, char* BUFFER);
+status_t abstract_i2c_write(uint8_t reg_addr, const uint8_t* reg_data,
+                            uint32_t length, uint8_t dev_addr);
+status_t abstract_i2c_read(uint8_t reg_addr, uint8_t* reg_data, uint32_t length, uint8_t dev_addr);
 
 #endif //I2C__H

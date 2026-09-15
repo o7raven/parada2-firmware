@@ -1,4 +1,8 @@
 #include "i2c.h"
+#include "system/status.h"
+#include <hardware/i2c.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 status_t abstract_i2c_init(void) {
     // @TODO Add error handling 
@@ -9,4 +13,21 @@ status_t abstract_i2c_init(void) {
     gpio_pull_up(I2C_SCL);
 
     return STATUS_OK;
+}
+
+status_t abstract_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, uint8_t dev_addr){
+    uint8_t buffer_to_write[length+1];
+    buffer_to_write[0] = dev_addr;
+    for(uint32_t i = 0; i < length; i++){
+        buffer_to_write[i+1] = reg_data[i];
+    }
+    i2c_write_blocking(I2C_PORT, dev_addr, buffer_to_write, length, true);
+    return STATUS_NOT_IMPLEMENTED;
+}
+
+status_t abstract_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length,
+                           uint8_t dev_addr) {
+  i2c_write_blocking(I2C_PORT, dev_addr, &reg_addr, 1, true);
+  i2c_read_blocking(I2C_PORT, reg_addr, reg_data, length, false);
+  return STATUS_NOT_IMPLEMENTED;
 }
