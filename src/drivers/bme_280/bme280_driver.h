@@ -8,7 +8,7 @@
 #define _BME280__H
 
 #include "system/status.h"
-#include "bme280.h"
+#include "libs/bosch/bme280.h"
 
 /* Difference between BME280 and BMP280
 5.2 Register compatibility to BMP280

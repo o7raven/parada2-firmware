@@ -1,6 +1,4 @@
 #include "bme280_driver.h"
-#include "drivers/bme_280/bme280.h"
-#include "drivers/bme_280/bme280_defs.h"
 #include "system/status.h"
 
 
