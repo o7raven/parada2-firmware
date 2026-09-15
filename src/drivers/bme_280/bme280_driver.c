@@ -10,7 +10,7 @@
 
 
 // @Note add proper error handling
-void configure_bme280(){
+status_t configure_bme280(){
     uint8_t rslt;
 
     struct bme280_settings settings;
@@ -30,7 +30,7 @@ void configure_bme280(){
     rslt = bme280_init(&dev);
     if(rslt!= BME280_OK){
         log_error("BME280 initialization failed", STATUS_SENSOR_ERROR_BME_CONFIG);
-        return;
+        return STATUS_SENSOR_ERROR_BME_CONFIG;
     }
     sleep_ms(100);
 
@@ -50,26 +50,28 @@ void configure_bme280(){
     rslt = bme280_set_sensor_settings(BME280_SEL_ALL_SETTINGS, &settings, &dev);
     if(rslt!= BME280_OK){
         log_error("Failed to SET BME280 settings", STATUS_SENSOR_ERROR_BME_CONFIG);
-        return;
+        return STATUS_SENSOR_ERROR_BME_CONFIG;
     }
 
     rslt = bme280_set_sensor_mode(BME280_POWERMODE_NORMAL, &dev);
 
     if(rslt != BME280_OK){
         log_error("Failed to SET BME280 sensor mode", STATUS_SENSOR_ERROR_BME_CONFIG);
-        return;
+        return STATUS_SENSOR_ERROR_BME_CONFIG;
     }
 
     rslt = bme280_cal_meas_delay(&period, &settings);
 
     if(rslt != BME280_OK){
         log_error("Failed to calculate measurement delay", STATUS_SENSOR_ERROR_BME_CONFIG);
-        return;
+        return STATUS_SENSOR_ERROR_BME_CONFIG;
     }
 
     log_info("Measurement time: %lu us", period);
 
     log_success("BME280 configured successfully");
+
+    return STATUS_OK;
     
 }
 
@@ -90,7 +92,7 @@ BME280_INTF_RET_TYPE bme280_i2c_read(uint8_t reg_addr, uint8_t *reg_data,
   return BME280_INTF_RET_SUCCESS;
 }
 
-void bme280_scan(struct bme280_data* comp_data){
+status_t bme280_scan(struct bme280_data* comp_data){
     uint8_t status_reg;
 
     bme280_get_regs(BME280_REG_STATUS, &status_reg, 1, &dev);
@@ -98,4 +100,6 @@ void bme280_scan(struct bme280_data* comp_data){
         bme280_get_sensor_data(BME280_TEMP | BME280_HUM | BME280_PRESS,
                                comp_data, &dev);
     }
+    // add prorper erroer handling
+    return STATUS_OK;
 }
