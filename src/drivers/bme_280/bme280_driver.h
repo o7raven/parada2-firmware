@@ -81,7 +81,7 @@ typedef enum {
 
 
 
-struct bme280_dev dev;
+static struct bme280_dev dev;
 static uint32_t period;
 
 status_t configure_bme280();
