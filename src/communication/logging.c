@@ -49,3 +49,15 @@ void log_sensor(const char* message, ...){
 
     blink(LOG_BLINK_ms, 1);
 }
+
+void log_context(system_context_t *ctx) {
+
+    // Awful formatting ikr
+  printf(
+      "[\033[35mCONTEXT\033[0m]\n\tsensors_ok:\t%d\n\tradio_ok:\t"
+      "%d\n\tpower_ok:\t%d\n\tlow_battery:\t%d\n\tcritical_fault:\t%d\n\tgps_"
+      "found:\t%d\n\tradio_connected:\t%d\n",
+      ctx->sensors_ok, ctx->radio_ok, ctx->power_ok, ctx->low_battery,
+      ctx->critical_fault, ctx->gps_found, ctx->radio_connected);
+  blink(LOG_BLINK_ms, 1);
+}
