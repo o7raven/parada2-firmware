@@ -1,6 +1,6 @@
 #include "state_machine.h"
 #include "sensors/sensors.h"
-
+#include "communication/logging.h"
 
 status_t state_machine_init(state_machine_t *state_machine) {
   sm_changed = true;
