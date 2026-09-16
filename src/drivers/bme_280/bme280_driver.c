@@ -106,17 +106,16 @@ status_t bme280_scan(struct bme280_data* comp_data){
 
     uint8_t rslt = bme280_get_regs(BME280_REG_STATUS, &status_reg, 1, &dev);
     if(rslt != BME280_OK){
-        log_error("get reg error",STATUS_SENSOR_ERROR_BME_READ);
-        return STATUS_ERROR;
+        log_warning("BME280 get registers failed");
+        return STATUS_SENSOR_ERROR_BME_READ;
     }
     if(status_reg & BME280_STATUS_MEAS_DONE){
-        uint8_t rslt = bme280_get_sensor_data(BME280_TEMP | BME280_HUM | BME280_PRESS,
+        rslt = bme280_get_sensor_data(BME280_TEMP | BME280_HUM | BME280_PRESS,
                                comp_data, &dev);
         if(rslt != BME280_OK){
-            log_error("read not ok",STATUS_SENSOR_ERROR_BME_READ);
+            log_warning("BME280 getting sensor data failed");
             return STATUS_SENSOR_ERROR_BME_READ;
         }
     }
-    // add prorper erroer handling
     return STATUS_OK;
 }
