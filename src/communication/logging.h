@@ -12,4 +12,6 @@ void log_warning(const char* message);
 void log_error(const char* message, status_t status);
 void log_success(const char* message);
 
+void log_sensor(const char* message, ...);
+
 #endif // LOGGING__H

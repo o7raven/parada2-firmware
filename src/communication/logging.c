@@ -36,3 +36,16 @@ void log_success(const char* message){
     printf("[\033[32mSUCCESS\033[0m]: %s\n", message);
     blink(LOG_BLINK_ms, 1);
 }
+
+void log_sensor(const char* message, ...){
+    va_list args;
+    va_start(args, message);
+
+    printf("[\033[36mSENSOR DATA\033[0m]: ");
+    vprintf(message, args);
+    printf("\n");
+
+    va_end(args);
+
+    blink(LOG_BLINK_ms, 1);
+}
