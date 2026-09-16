@@ -25,24 +25,29 @@ status_t init_sensors(sensors_t* sens_handler, system_context_t* ctx){
 }
 
 status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
-    log_info("Reading bme");
+    log_info("Reaing BME280 ...");
     if(bme280_scan(&sens_handler->bme280) != STATUS_OK){
-        log_error("Read error", STATUS_SENSOR_ERROR_BME_READ);
+        log_warning("BME280 Reading faiure...");
+    }else {
+        log_success("BME280 Reading successfull");
+        log_sensor("BME280\t(temp,press,hum):\t%fC\t%f ...\t%f ...",
+                   sens_handler->bme280.temperature,
+                   sens_handler->bme280.pressure,
+                   sens_handler->bme280.humidity);
     }
     if(sens_handler == NULL){
         log_error("Sens handler is null", STATUS_I2C_ERROR);
     }
-    log_info("Bme: %f", sens_handler->bme280.temperature);
-    log_info("pressure: %f", sens_handler->bme280.pressure);
-    log_info("humidity: %f", sens_handler->bme280.humidity);
 
-    /*if(read_hmc(&sens_handler->hmc) != STATUS_OK){
+    if(read_hmc(&sens_handler->hmc) != STATUS_OK){
         log_error("Read error",STATUS_SENSOR_ERROR_HMC_READ);
     }
     if(read_imu(&sens_handler->imu) != STATUS_OK){
         log_error("Read error",STATUS_SENSOR_ERROR_IMU_READ);
 
-    }*/
+    }
+
+
     return STATUS_OK;
 }
 
