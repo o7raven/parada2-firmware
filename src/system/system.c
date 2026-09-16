@@ -42,7 +42,7 @@ status_t system_init(void) {
 
   init_status = init_sensors(&sensors, &system_ctx);
   if (init_status != STATUS_OK) {
-    log_error("Sensors initialization failed", init_status);
+    log_warning("Sensors initialization failed");
   }
   else{
     log_success("Sensors initialization successful");
@@ -50,10 +50,10 @@ status_t system_init(void) {
 
   init_status = gps_init(&gps_data, &system_ctx);
   if (init_status != STATUS_OK) {
-    log_error("GPS initialization failed", init_status);
+    log_error("GPS UART initialization failed", init_status);
   }
   else{
-    log_success("GPS initialization successful");
+    log_success("GPS UART initialization successful");
   }
 
   init_status = state_machine_init(&system_state_machine);
@@ -68,6 +68,7 @@ status_t system_init(void) {
   watchdog_enable(WATCHDOG_TIMEOUT_ms+DATA_COLLECTION_PERIOD_ms, WATCHDOG_PAUSE_ON_DBG);
 
   log_success("Initialization complete");
+  log_context(&system_ctx);
   log_info("State machine starting ... ");
 
   return STATUS_OK;
