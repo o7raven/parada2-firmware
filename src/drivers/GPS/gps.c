@@ -1,4 +1,5 @@
 #include "gps.h"
+#include "communication/logging.h"
 #include "system/status.h"
 #include <hardware/gpio.h>
 #include <hardware/uart.h>
@@ -16,7 +17,10 @@ status_t gps_init(gps_t* gps_handler, system_context_t* ctx){
     gps_handler->second= 0;
     gps_handler->milisecond= 0;
 
-    uart_init(GPS_UART, GPS_BAUD);
+    uint rslt = uart_init(GPS_UART, GPS_BAUD);
+    if(rslt != GPS_BAUD){
+        log_warning("GPS UART initialization failed");
+    }
     gpio_set_function(GPS_TX, GPIO_FUNC_UART);
     gpio_set_function(GPS_RX, GPIO_FUNC_UART);
 
