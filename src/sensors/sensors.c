@@ -12,21 +12,21 @@ status_t init_sensors(sensors_t* sens_handler, system_context_t* ctx){
 
     status_t init_status = STATUS_OK;
     if(configure_bme280() != STATUS_OK){
-        log_error("Config error", STATUS_SENSOR_ERROR_BME_CONFIG);
+        log_error("BME280 config error", STATUS_SENSOR_ERROR_BME_CONFIG);
         init_status = STATUS_SENSOR_INIT_FAIL;
 
         ctx->sensors_ok = false;
     }
 
     if(configure_hmc(&(sens_handler->hmc))!=STATUS_OK){
-        log_error("Config error",STATUS_SENSOR_ERROR_HMC_CONFIG);
+        log_error("HMC config error",STATUS_SENSOR_ERROR_HMC_CONFIG);
         init_status = STATUS_SENSOR_INIT_FAIL;
 
         ctx->sensors_ok = false;
     }
 
     if(configure_imu(&(sens_handler->imu))!=STATUS_OK){
-        log_error("Config error",STATUS_SENSOR_ERROR_IMU_CONFIG);
+        log_error("IMU config error",STATUS_SENSOR_ERROR_IMU_CONFIG);
         init_status = STATUS_SENSOR_INIT_FAIL;
 
         ctx->sensors_ok = false;
@@ -53,14 +53,22 @@ status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
                    sens_handler->bme280.humidity);
     }
 
+    if(read_imu(&sens_handler->imu) != STATUS_OK){
+        ctx->sensors_ok = false;
+        log_warning("IMU read failure");
+    }else{
+        log_success("IMU Reading successfull");
+        log_sensor("IMU Acceleration (x,y,z):\t%f\t%f\t%f",
+                   sens_handler->imu.acc_X, sens_handler->imu.acc_Y,
+                   sens_handler->imu.acc_Z);
+        log_sensor("IMU Gyro(x,y,z):\t%f\t%f\t%f",
+                   sens_handler->imu.gyro_X, sens_handler->imu.gyro_Y,
+                   sens_handler->imu.gyro_Z);
+    }
+
     if(read_hmc(&sens_handler->hmc) != STATUS_OK){
         ctx->sensors_ok = false;
         log_error("Read error",STATUS_SENSOR_ERROR_HMC_READ);
-    }
-    if(read_imu(&sens_handler->imu) != STATUS_OK){
-        ctx->sensors_ok = false;
-        log_error("Read error",STATUS_SENSOR_ERROR_IMU_READ);
-
     }
 
 

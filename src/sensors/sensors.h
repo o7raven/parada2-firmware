@@ -1,11 +1,11 @@
 #ifndef _SENSORS__H
 #define _SENSORS__H
 
+#include "drivers/IMU/imu.h"
 #include "drivers/bme_280/bme280_driver.h"
 #include "system/status.h"
 #include "system/state_machine.h"
 #include "drivers/hmc5883l/hmc5883l.h"
-#include "drivers/IMU/imu.h"
 
 typedef struct {
    struct bme280_data bme280; 
