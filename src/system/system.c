@@ -4,6 +4,7 @@
 #include "config/system_config.h"
 #include "system/state_machine.h"
 #include "system/status.h"
+#include <hardware/watchdog.h>
 #include <pico/time.h>
 
 volatile bool radio_is_due = false;
@@ -30,7 +31,12 @@ status_t system_init(void) {
   log_error("Error log working", STATUS_DUMMY_ERROR);
   log_success("Success log working");
 
+  if(watchdog_caused_reboot()){
+    log_warning("Watchdog has caused a reboot!");
+  }
+
   log_info("Starting system initialization ...");
+  sleep_ms(BOOT_TIME_TO_INIT_ms);
 
   init_status = communication_init();
   if (init_status != STATUS_OK) {
@@ -40,6 +46,8 @@ status_t system_init(void) {
     log_success("Communication initialization successful");
   }
 
+  sleep_ms(BOOT_TIME_TO_INIT_ms);
+
   init_status = init_sensors(&sensors, &system_ctx);
   if (init_status != STATUS_OK) {
     log_warning("Sensors initialization failed");
@@ -47,6 +55,7 @@ status_t system_init(void) {
   else{
     log_success("Sensors initialization successful");
   }
+  sleep_ms(BOOT_TIME_TO_INIT_ms);
 
   init_status = gps_init(&gps_data, &system_ctx);
   if (init_status != STATUS_OK) {
@@ -56,6 +65,8 @@ status_t system_init(void) {
     log_success("GPS UART initialization successful");
   }
 
+  sleep_ms(BOOT_TIME_TO_INIT_ms);
+
   init_status = state_machine_init(&system_state_machine);
   if (init_status != STATUS_OK) {
     log_error("State machine initialization failed", init_status);
@@ -64,6 +75,7 @@ status_t system_init(void) {
     log_success("State machine initialization successful");
   }
 
+  sleep_ms(BOOT_TIME_TO_INIT_ms);
   // @Watchdog
   watchdog_enable(WATCHDOG_TIMEOUT_ms+DATA_COLLECTION_PERIOD_ms, WATCHDOG_PAUSE_ON_DBG);
 
