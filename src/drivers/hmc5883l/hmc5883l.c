@@ -34,16 +34,55 @@ status_t configure_hmc(hmc5883l_t *hmc_handler) {
     return STATUS_SENSOR_INIT_FAIL;
   }
 
-  uint8_t register_config = (0b0110000) | (rate_15Hz<<2) | (samples_1);
-  abstract_i2c_write(HMC_REG_CONFIG_A, &register_config, 1, HMC_DEV_ADDR);
+  uint8_t register_config = (0b0110000) | (rate_15Hz << 2) | (samples_1);
+  if (abstract_i2c_write(HMC_REG_CONFIG_A, &register_config, 1, HMC_DEV_ADDR) !=
+      STATUS_OK) {
+    log_warning("Issue with seting the A Config register");
+    return STATUS_SENSOR_ERROR_HMC_CONFIG;
+  }
 
-  register_config = (0b11100000) & (range_1p3 << 5); 
-  abstract_i2c_write(HMC_REG_CONFIG_B, &register_config, 1, HMC_DEV_ADDR);
+  register_config = (0b11100000) & (range_1p3 << 5);
+  if (abstract_i2c_write(HMC_REG_CONFIG_B, &register_config, 1, HMC_DEV_ADDR) !=
+      STATUS_OK) {
+    log_warning("Issue with seting the B Config register");
+    return STATUS_SENSOR_ERROR_HMC_CONFIG;
+  }
 
   register_config = (0b00000011) & (mode_continuous);
-  abstract_i2c_write(HMC_REG_MODE, &register_config, 1, HMC_DEV_ADDR);
+  if (abstract_i2c_write(HMC_REG_MODE, &register_config, 1, HMC_DEV_ADDR) !=
+      STATUS_OK) {
+    log_warning("Issue with seting the Mode register");
+    return STATUS_SENSOR_ERROR_HMC_CONFIG;
+  }
   return STATUS_OK;
 }
 status_t read_hmc(hmc5883l_t* hmc_handler){
-    return STATUS_NOT_IMPLEMENTED;
+  uint8_t x_reg_MSB;
+  uint8_t x_reg_LSB;
+
+  abstract_i2c_read(HMC_REG_DATA_X_OUT_MSB, &x_reg_MSB, 1, HMC_DEV_ADDR);
+  abstract_i2c_read(HMC_REG_DATA_X_OUT_LSB, &x_reg_LSB, 1, HMC_DEV_ADDR);
+
+  int16_t x_out = (x_reg_MSB << 8) | x_reg_LSB;
+
+  uint8_t y_reg_MSB;
+  uint8_t y_reg_LSB;
+
+  abstract_i2c_read(HMC_REG_DATA_Y_OUT_MSB, &y_reg_MSB, 1, HMC_DEV_ADDR);
+  abstract_i2c_read(HMC_REG_DATA_Y_OUT_LSB, &y_reg_LSB, 1, HMC_DEV_ADDR);
+
+  int16_t y_out = (y_reg_MSB << 8) | y_reg_LSB;
+
+  uint8_t z_reg_MSB;
+  uint8_t z_reg_LSB;
+
+  abstract_i2c_read(HMC_REG_DATA_Z_OUT_MSB, &z_reg_MSB, 1, HMC_DEV_ADDR);
+  abstract_i2c_read(HMC_REG_DATA_Z_OUT_LSB, &z_reg_LSB, 1, HMC_DEV_ADDR);
+
+  int16_t z_out = (z_reg_MSB << 8) | z_reg_LSB;
+
+  hmc_handler->x_axis = (float)x_out;
+  hmc_handler->y_axis = (float)y_out;
+  hmc_handler->z_axis = (float)z_out;
+  return STATUS_OK;
 }
