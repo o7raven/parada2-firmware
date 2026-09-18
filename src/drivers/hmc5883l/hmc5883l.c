@@ -34,21 +34,21 @@ status_t configure_hmc(hmc5883l_t *hmc_handler) {
     return STATUS_SENSOR_INIT_FAIL;
   }
 
-  uint8_t register_config = (0b0110000) | (rate_15Hz << 2) | (samples_1);
+  uint8_t register_config = (samples_1 << 5) | (rate_15Hz << 2) | 0x00;
   if (abstract_i2c_write(HMC_REG_CONFIG_A, &register_config, 1, HMC_DEV_ADDR) !=
       STATUS_OK) {
     log_warning("Issue with seting the A Config register");
     return STATUS_SENSOR_ERROR_HMC_CONFIG;
   }
 
-  register_config = (0b11100000) & (range_1p3 << 5);
+  register_config = (range_1p3 << 5);
   if (abstract_i2c_write(HMC_REG_CONFIG_B, &register_config, 1, HMC_DEV_ADDR) !=
       STATUS_OK) {
     log_warning("Issue with seting the B Config register");
     return STATUS_SENSOR_ERROR_HMC_CONFIG;
   }
 
-  register_config = (0b00000011) & (mode_continuous);
+  register_config = (mode_continuous);
   if (abstract_i2c_write(HMC_REG_MODE, &register_config, 1, HMC_DEV_ADDR) !=
       STATUS_OK) {
     log_warning("Issue with seting the Mode register");
