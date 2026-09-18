@@ -42,9 +42,9 @@ typedef enum{
 } output_rate_t;
 
 typedef enum{
-    single = 0b01,
-    continuous = 0b00,
-    idle = 0b10
+    mode_single = 0b01,
+    mode_continuous = 0b00,
+    mode_idle = 0b10
 } mode_type_t;
 
 typedef enum{
@@ -77,6 +77,7 @@ status_t read_hmc(hmc5883l_t* hmc_handler);
 status_t set_meas_mode(mode_type_t mode);
 status_t set_output_rate(output_rate_t rate);
 status_t set_samples(samples_t samples);
+status_t set_range(gain_settings_t gain);
 
 hmc5883l_t self_test();
 
