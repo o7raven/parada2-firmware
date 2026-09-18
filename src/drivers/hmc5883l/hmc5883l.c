@@ -34,6 +34,14 @@ status_t configure_hmc(hmc5883l_t *hmc_handler) {
     return STATUS_SENSOR_INIT_FAIL;
   }
 
+  uint8_t register_config = (0b0110000) | (rate_15Hz<<2) | (samples_1);
+  abstract_i2c_write(HMC_REG_CONFIG_A, &register_config, 1, HMC_DEV_ADDR);
+
+  register_config = (0b11100000) & (range_1p3 << 5); 
+  abstract_i2c_write(HMC_REG_CONFIG_B, &register_config, 1, HMC_DEV_ADDR);
+
+  register_config = (0b00000011) & (mode_continuous);
+  abstract_i2c_write(HMC_REG_MODE, &register_config, 1, HMC_DEV_ADDR);
   return STATUS_OK;
 }
 status_t read_hmc(hmc5883l_t* hmc_handler){
