@@ -35,7 +35,7 @@ status_t init_sensors(sensors_t* sens_handler, system_context_t* ctx){
 }
 
 status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
-    log_info("Reaing BME280 ...");
+    log_info("Reading BME280 ...");
 
     if(sens_handler == NULL){
         ctx->sensors_ok = false;
