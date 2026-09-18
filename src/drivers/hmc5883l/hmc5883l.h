@@ -4,29 +4,29 @@
 #include "system/status.h"
 
 /* Register List */
-#define DEV_ADDR (0x1E)
+#define HMC_DEV_ADDR (0x1E)
 
-#define REG_CONFIG_A (0x00)
-#define REG_CONFIG_B (0x01)
-#define REG_MODE (0x02)
+#define HMC_REG_CONFIG_A (0x00)
+#define HMC_REG_CONFIG_B (0x01)
+#define HMC_REG_MODE (0x02)
 
-#define REG_DATA_X_OUT_MSB (0x03)
-#define REG_DATA_X_OUT_LSB (0x04)
+#define HMC_REG_DATA_X_OUT_MSB (0x03)
+#define HMC_REG_DATA_X_OUT_LSB (0x04)
 
-#define REG_DATA_Z_OUT_MSB (0x05)
-#define REG_DATA_Z_OUT_LSB (0x06)
+#define HMC_REG_DATA_Z_OUT_MSB (0x05)
+#define HMC_REG_DATA_Z_OUT_LSB (0x06)
 
-#define REG_DATA_Y_OUT_MSB (0x07)
-#define REG_DATA_Y_OUT_LSB (0x08)
+#define HMC_REG_DATA_Y_OUT_MSB (0x07)
+#define HMC_REG_DATA_Y_OUT_LSB (0x08)
 
-#define REG_STATUS (0x09)
+#define HMC_REG_STATUS (0x09)
 
-#define REG_IDENTIFICATION_A (0x0A)
-#define ID_A_VAL (0b01001000)
-#define REG_IDENTIFICATION_B (0x0B)
-#define ID_B_VAL (0b00110100)
-#define REG_IDENTIFICATION_C (0x0C)
-#define ID_C_VAL (0b00110011)
+#define HMC_REG_IDENTIFICATION_A (0x0A)
+#define HMC_ID_A_VAL (0b01001000)
+#define HMC_REG_IDENTIFICATION_B (0x0B)
+#define HMC_ID_B_VAL (0b00110100)
+#define HMC_REG_IDENTIFICATION_C (0x0C)
+#define HMC_ID_C_VAL (0b00110011)
 
 #define OVERFLOW_VALUE -4096
 
@@ -45,7 +45,7 @@ typedef enum{
     single = 0b01,
     continuous = 0b00,
     idle = 0b10
-} mode_t;
+} mode_type_t;
 
 typedef enum{
     samples_8 = 0b11,
@@ -74,7 +74,7 @@ typedef struct{
 status_t configure_hmc(hmc5883l_t* hmc_handler);
 status_t read_hmc(hmc5883l_t* hmc_handler);
 
-status_t set_meas_mode(mode_t mode);
+status_t set_meas_mode(mode_type_t mode);
 status_t set_output_rate(output_rate_t rate);
 status_t set_samples(samples_t samples);
 
