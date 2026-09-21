@@ -37,3 +37,6 @@
 #define GPS_TX 8
 #define GPS_RX 9
 #define GPS_BAUD 9600
+
+/* HMC */
+#define HMC_GAIN_SETTINGS range_1p3
