@@ -3,6 +3,16 @@
 #include "drivers/i2c/i2c.h"
 #include "system/status.h"
 
+static const hmc_gain_config_t gain_table[8] = {
+    {0b000, 0.73f}, // 0.88Ga
+    {0b001, 0.92f}, // 1.3Ga
+    {0b010, 1.22f}, // 1.9Ga
+    {0b011, 1.52f}, // 2.g Ga
+    {0b100, 2.27f}, // 4.0 Ga
+    {0b101, 2.56f}, // 4.7 Ga
+    {0b110, 3.03f}, //5.6 Ga
+    {0b111, 4.35f}, //8.1 Ga
+};
 status_t configure_hmc(hmc5883l_t *hmc_handler) {
   // Check the Identification registers
   log_info("Accessing HMC5883l identification registers...");
