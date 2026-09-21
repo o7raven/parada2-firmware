@@ -64,6 +64,17 @@ status_t configure_hmc(hmc5883l_t *hmc_handler) {
     log_warning("Issue with seting the Mode register");
     return STATUS_SENSOR_ERROR_HMC_CONFIG;
   }
+  uint8_t config_a;
+  uint8_t config_b;
+  uint8_t mode;
+
+  abstract_i2c_read(HMC_REG_CONFIG_A, &config_a, 1, HMC_DEV_ADDR);
+  abstract_i2c_read(HMC_REG_CONFIG_B, &config_b, 1, HMC_DEV_ADDR);
+  abstract_i2c_read(HMC_REG_MODE, &mode, 1, HMC_DEV_ADDR);
+
+  log_info("Config A: 0x%02X", config_a);
+  log_info("Config B: 0x%02X",config_b);
+  log_info("Mode: 0x%02X", mode);
   return STATUS_OK;
 }
 status_t read_hmc(hmc5883l_t* hmc_handler){
@@ -73,9 +84,9 @@ status_t read_hmc(hmc5883l_t* hmc_handler){
 
   abstract_i2c_read(HMC_REG_DATA_X_OUT_MSB, hmc_reg_out, 6, HMC_DEV_ADDR);
 
-  int16_t x_out = (hmc_reg_out[0] << 8) | hmc_reg_out[1];
-  int16_t z_out = (hmc_reg_out[2] << 8) | hmc_reg_out[3];
-  int16_t y_out = (hmc_reg_out[4] << 8) | hmc_reg_out[5];
+  int16_t x_out = (int16_t)((uint16_t)(hmc_reg_out[0] << 8) | hmc_reg_out[1]);
+  int16_t z_out = (int16_t)((uint16_t)(hmc_reg_out[2] << 8) | hmc_reg_out[3]);
+  int16_t y_out = (int16_t)((uint16_t)(hmc_reg_out[4] << 8) | hmc_reg_out[5]);
 
 
   hmc_handler->x_axis = convert_to_Mg(x_out);
