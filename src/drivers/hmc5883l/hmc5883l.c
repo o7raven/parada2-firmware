@@ -88,11 +88,13 @@ status_t read_hmc(hmc5883l_t* hmc_handler){
   int16_t x_out = (int16_t)((uint16_t)(hmc_reg_out[0] << 8) | hmc_reg_out[1]);
   int16_t z_out = (int16_t)((uint16_t)(hmc_reg_out[2] << 8) | hmc_reg_out[3]);
   int16_t y_out = (int16_t)((uint16_t)(hmc_reg_out[4] << 8) | hmc_reg_out[5]);
+  log_info("HMC raw bytes: %02X %02X %02X %02X %02X %02X", hmc_reg_out[0],
+           hmc_reg_out[1], hmc_reg_out[2], hmc_reg_out[3], hmc_reg_out[4],
+           hmc_reg_out[5]);
 
-
-  hmc_handler->x_axis = convert_to_Mg(x_out);
-  hmc_handler->y_axis = convert_to_Mg(y_out);
-  hmc_handler->z_axis = convert_to_Mg(z_out);
+  hmc_handler->x_axis = x_out;
+  hmc_handler->y_axis = y_out;
+  hmc_handler->z_axis = z_out;
   return STATUS_OK;
 }
 
