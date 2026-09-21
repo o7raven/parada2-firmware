@@ -51,6 +51,7 @@ status_t configure_hmc(hmc5883l_t *hmc_handler) {
     return STATUS_SENSOR_ERROR_HMC_CONFIG;
   }
 
+  //  Possible bug check if not <<6
   register_config = (gain_table[HMC_GAIN_SETTINGS].reg_value << 5);
   if (abstract_i2c_write(HMC_REG_CONFIG_B, &register_config, 1, HMC_DEV_ADDR) !=
       STATUS_OK) {
