@@ -61,7 +61,7 @@ status_t read_hmc(hmc5883l_t* hmc_handler){
   // 0 MSB 1LSB ...
   uint8_t hmc_reg_out[6];
 
-  abstract_i2c_read(HMC_REG_DATA_X_OUT_MSB, hmc_reg_out, 1, HMC_DEV_ADDR);
+  abstract_i2c_read(HMC_REG_DATA_X_OUT_MSB, hmc_reg_out, 6, HMC_DEV_ADDR);
 
   int16_t x_out = (hmc_reg_out[0] << 8) | hmc_reg_out[1];
   int16_t z_out = (hmc_reg_out[2] << 8) | hmc_reg_out[3];
@@ -69,8 +69,8 @@ status_t read_hmc(hmc5883l_t* hmc_handler){
 
 
   hmc_handler->x_axis = convert_to_Mg(x_out);
-  hmc_handler->y_axis = convert_to_Mg(z_out);
-  hmc_handler->z_axis = convert_to_Mg(y_out);
+  hmc_handler->y_axis = convert_to_Mg(y_out);
+  hmc_handler->z_axis = convert_to_Mg(z_out);
   return STATUS_OK;
 }
 
