@@ -68,7 +68,11 @@ status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
 
     if(read_hmc(&sens_handler->hmc) != STATUS_OK){
         ctx->sensors_ok = false;
-        log_error("Read error",STATUS_SENSOR_ERROR_HMC_READ);
+        log_error("HMC read failure",STATUS_SENSOR_ERROR_HMC_READ);
+    }else{
+        log_success("HMC5883l Reading successfull");
+        log_sensor("HMC (X,Y,Z) in mG:\t%f\t%f\t%f", sens_handler->hmc.x_axis,
+                   sens_handler->hmc.y_axis, sens_handler->hmc.z_axis);
     }
 
 
