@@ -2,6 +2,8 @@
 #define _HMC5883L__H_
 
 #include "system/status.h"
+#include "inttypes.h"
+#include <stdint.h>
 
 /* Register List */
 #define HMC_DEV_ADDR (0x1E)
@@ -54,16 +56,31 @@ typedef enum{
     samples_1 = 0b00,
 } samples_t;
 
-typedef enum{
-    range_0p88 = 0b000,
-    range_1p3 = 0b001,
-    range_1p9 = 0b010,
-    range_2p5 = 0b011,
-    range_4 = 0b100,
-    range_4p7 = 0b101,
-    range_5p6 = 0b110,
-    range_8p1 = 0b111
-} gain_settings_t;
+typedef struct{
+    uint8_t reg_value;
+    float mg_per_digit;
+} hmc_gain_config_t;
+
+typedef enum {
+  range_0p88 = 0,
+  range_1p3,
+  range_1p9,
+  range_2p5,
+  range_4,
+  range_4p7, 
+  range_5p6,
+  range_8p1
+} gain_table_t;
+static const hmc_gain_config_t gain_table[8] = {
+    {0b000, 0.73f}, // 0.88Ga
+    {0b001, 0.92f}, // 1.3Ga
+    {0b010, 1.22f}, // 1.9Ga
+    {0b011, 1.52f}, // 2.g Ga
+    {0b100, 2.27f}, // 4.0 Ga
+    {0b101, 2.56f}, // 4.7 Ga
+    {0b110, 3.03f}, //5.6 Ga
+    {0b111, 4.35f}, //8.1 Ga
+};
 
 typedef struct{
     float x_axis;
@@ -77,9 +94,11 @@ status_t read_hmc(hmc5883l_t* hmc_handler);
 status_t set_meas_mode(mode_type_t mode);
 status_t set_output_rate(output_rate_t rate);
 status_t set_samples(samples_t samples);
-status_t set_range(gain_settings_t gain);
+status_t set_range(gain_table_t _gT);
 
 hmc5883l_t self_test();
+
+float convert_to_Mg(int16_t val);
 
 
 
