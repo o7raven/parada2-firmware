@@ -7,7 +7,7 @@
 #include "system/status.h"
 #include "config/system_config.h"
 
-status_t init_sensors(sensors_t* sens_handler, system_context_t* ctx){
+status_t init_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
     ctx->sensors_ok = true;
 
     status_t init_status = STATUS_OK;
@@ -34,17 +34,20 @@ status_t init_sensors(sensors_t* sens_handler, system_context_t* ctx){
     return init_status;
 }
 
-status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
+status_t read_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
     log_info("Reading BME280 ...");
+    status_t return_status = STATUS_OK;
 
     if(sens_handler == NULL){
         ctx->sensors_ok = false;
         log_error("Sens handler is null", STATUS_I2C_ERROR);
+        return_status = STATUS_SENSOR_ERROR;
     }
 
     if(bme280_scan(&sens_handler->bme280) != STATUS_OK){
         ctx->sensors_ok = false;
         log_warning("BME280 Reading faiure...");
+        return_status = STATUS_SENSOR_ERROR_BME_READ;
     }else {
         log_success("BME280 Reading successfull");
         log_sensor("BME280\t(temp,press,hum):\t%fC\t%f ...\t%f ...",
@@ -56,6 +59,7 @@ status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
     if(read_imu(&sens_handler->imu) != STATUS_OK){
         ctx->sensors_ok = false;
         log_warning("IMU read failure");
+        return_status = STATUS_SENSOR_ERROR_IMU_READ;
     }else{
         log_success("IMU Reading successfull");
         log_sensor("IMU Acceleration (x,y,z):\t%f\t%f\t%f",
@@ -69,6 +73,7 @@ status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
     if(read_hmc(&sens_handler->hmc) != STATUS_OK){
         ctx->sensors_ok = false;
         log_error("HMC read failure",STATUS_SENSOR_ERROR_HMC_READ);
+        return_status = STATUS_SENSOR_ERROR_HMC_READ;
     }else{
         log_success("HMC5883l Reading successfull");
         log_sensor("HMC (X,Y,Z) in mG:\t%f\t%f\t%f", sens_handler->hmc.x_axis,
@@ -76,9 +81,9 @@ status_t read_sensors(sensors_t* sens_handler, system_context_t* ctx){
     }
 
 
-    return STATUS_OK;
+    return return_status;
 }
 
-status_t sensors_check_health(system_context_t* ctx){
+status_t sensors_check_health(sensors_context_t* ctx){
     return STATUS_NOT_IMPLEMENTED;
 }
