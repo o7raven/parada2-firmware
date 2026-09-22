@@ -33,6 +33,7 @@ status_t system_init(void) {
 
   if(watchdog_caused_reboot()){
     log_warning("Watchdog has caused a reboot!");
+    sleep_ms(500);
   }
 
   log_info("Starting system initialization ...");
