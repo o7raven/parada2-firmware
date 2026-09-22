@@ -1,6 +1,7 @@
 #ifndef STATE_MACHINE__H
 #define STATE_MACHINE__H
 
+#include "sensors/sensors.h"
 #include "system/status.h"
 #include "stdint.h"
 #include "stdbool.h"
@@ -22,7 +23,7 @@ typedef struct{
 } state_machine_t;
 
 typedef struct{
-    bool sensors_ok;
+    sensors_context_t sensors;
     bool radio_ok;
     bool power_ok;
 
