@@ -39,4 +39,4 @@
 #define GPS_BAUD 9600
 
 /* HMC */
-#define HMC_GAIN_SETTINGS range_1p3
+#define HMC_GAIN_SETTINGS range_4 
