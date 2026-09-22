@@ -88,7 +88,7 @@ status_t set_range(gain_table_t _gT);
 
 hmc5883l_t self_test();
 
-float convert_to_Mg(int16_t val);
+float convert_to_mG(int16_t val);
 
 
 
