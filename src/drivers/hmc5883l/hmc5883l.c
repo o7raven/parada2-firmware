@@ -92,12 +92,12 @@ status_t read_hmc(hmc5883l_t* hmc_handler){
            hmc_reg_out[1], hmc_reg_out[2], hmc_reg_out[3], hmc_reg_out[4],
            hmc_reg_out[5]);
 
-  hmc_handler->x_axis = x_out;
-  hmc_handler->y_axis = y_out;
-  hmc_handler->z_axis = z_out;
+  hmc_handler->x_axis = convert_to_mG(x_out);
+  hmc_handler->y_axis = convert_to_mG(y_out);
+  hmc_handler->z_axis = convert_to_mG(z_out);
   return STATUS_OK;
 }
 
-float convert_to_Mg(int16_t val){
+float convert_to_mG(int16_t val){
   return val*gain_table[HMC_GAIN_SETTINGS].mg_per_digit;
 }
