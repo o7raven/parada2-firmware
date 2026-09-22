@@ -49,7 +49,7 @@ status_t system_init(void) {
 
   sleep_ms(BOOT_TIME_TO_INIT_ms);
 
-  init_status = init_sensors(&sensors, &system_ctx);
+  init_status = init_sensors(&sensors, &system_ctx.sensors);
   if (init_status != STATUS_OK) {
     log_warning("Sensors initialization failed");
   }
@@ -154,6 +154,6 @@ void system_run(void) {
 
 
 void system_work(void){
-      read_sensors(&sensors, &system_ctx);
+      read_sensors(&sensors, &system_ctx.sensors);
       get_location(&gps_data, &system_ctx);
 }
