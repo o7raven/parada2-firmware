@@ -3,6 +3,7 @@
 #include "system/status.h"
 #include <hardware/gpio.h>
 #include <hardware/uart.h>
+#include <hardware/watchdog.h>
 
 
 status_t gps_init(gps_t* gps_handler, system_context_t* ctx){
@@ -24,16 +25,43 @@ status_t gps_init(gps_t* gps_handler, system_context_t* ctx){
     gpio_set_function(GPS_TX, GPIO_FUNC_UART);
     gpio_set_function(GPS_RX, GPIO_FUNC_UART);
 
+    uart_set_hw_flow(GPS_UART, false, false);
     uart_set_baudrate(GPS_UART, GPS_BAUD);
+
+    // gps from implementation from
+    /* https://github.com/DragonflyValkyrie/pico-gps/blob/main/pico-gps.c */
+    const char configurations[] =
+        "$PMTK314,1,1,1,1,1,5,0,0,0,0,0,0,0,0,0,0,0,0,0*2C\r\n";
+
+    uart_puts(GPS_UART, configurations);
+
     return STATUS_OK;
 }
 
+status_t get_location(gps_t *gps_handler, system_context_t *ctx) {
+  static char sentence_buffer[256];
+  static uint16_t sentence_index = 0;
 
-status_t get_location(gps_t* gps_handler, system_context_t* ctx){
-    while(uart_is_readable(GPS_UART)){
-        char c = uart_getc(GPS_UART);
+  while (uart_is_readable(GPS_UART)) {
 
-        // implement nmea parsing (with external libary)
+    char data = uart_getc(GPS_UART);
+
+    if (data == '$') {
+      sentence_index = 0;
     }
-    return STATUS_NOT_IMPLEMENTED;
+
+    if (sentence_index < sizeof(sentence_buffer) - 1) {
+      sentence_buffer[sentence_index++] = data;
+    }
+
+    if (data == '\n') {
+      sentence_buffer[sentence_index] = '\0';
+
+      printf("%s", sentence_buffer);
+
+      sentence_index = 0;
+    }
+  }
+
+  return STATUS_NOT_IMPLEMENTED;
 }
