@@ -17,7 +17,7 @@ status_t configure_imu(imu_t* imu_handler){
 
     abstract_i2c_write(REG_ACCEL_CONFIG, &AFS_SEL, 1, mpu_slave_addr);
     abstract_i2c_write(REG_GYRO_CONFIG, &FS_SEL, 1, mpu_slave_addr);
-    abstract_i2c_write(REG_CONFIG, &mpu_dlpf_cfg, 1, mpu_slave_addr);
+    abstract_i2c_write(MPU_REG_CONFIG, &mpu_dlpf_cfg, 1, mpu_slave_addr);
 
     return STATUS_OK;
 }

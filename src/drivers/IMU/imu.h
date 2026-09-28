@@ -26,7 +26,7 @@ static uint8_t FS_SEL = FSR_500;
 static const float GYRO_LSB_SENSITIVITY = 65.5f;
 static uint8_t PLL_X_GYRO = 0x01;
 
-static uint8_t REG_CONFIG = 0x1a;
+static uint8_t MPU_REG_CONFIG = 0x1a;
 static uint8_t mpu_dlpf_cfg = 0x03;
 
 
