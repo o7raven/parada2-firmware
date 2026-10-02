@@ -34,9 +34,11 @@
 /* GPS */
 
 #define GPS_UART uart1
+#define GPS_UART_IRQ UART1_IRQ
 #define GPS_TX 8
 #define GPS_RX 9
 #define GPS_BAUD 9600
+#define GPS_RX_BUFFER_SIZE 2048
 
 /* HMC */
 #define HMC_GAIN_SETTINGS range_4 
