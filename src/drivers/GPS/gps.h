@@ -17,6 +17,8 @@ typedef struct{
 
 status_t gps_init(gps_t* gps_handler, system_context_t* ctx);
 status_t get_location(gps_t* gps_handler, system_context_t* ctx);
+static void gps_uart_irq_handler(void);
+static bool gps_read_byte(uint8_t* byte);
 
 
 #endif // _GPS__H
