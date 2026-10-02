@@ -2,6 +2,7 @@
 #ifndef SYSTEM_CONFIG__H
 #define SYSTEM_CONFIG__H
 
+// System Configuration
 #define FIRMWARE_VERSION "0.1"
 #define WATCHDOG_TIMEOUT_ms 3000
 #define WATCHDOG_PAUSE_ON_DBG 1
@@ -9,14 +10,12 @@
 
 #define LOG_BLINK_ms 50
 
-#define DATA_COLLECTION_PERIOD_ms 1500
 
+// Radio Configuration
+#define DATA_COLLECTION_PERIOD_ms 1500
 #define RUN_STATE_PACKET_FREQUENCY_ms 5000
 #define SAFE_STATE_PACKET_FREQUENCY_ms 15000 
 
-
-#define BME280_ENABLED 1
-#define IMU_ENABLED 0
-#define HMC5883l_ENABLED 0 
+// GPS Configuration
 
 #endif // SYSTEM_CONFIG__H
