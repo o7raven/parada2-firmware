@@ -63,8 +63,10 @@ add_executable(parada2
 
 )
 
+add_subdirectory(libs/no-OS-FatFS-SD-SPI-RPi-Pico/FatFs_SPI build)
+
 pico_set_program_name(parada2 "parada2")
-pico_set_program_version(parada2 "0.1")
+pico_set_program_version(parada2 "0.5")
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(parada2 1)
@@ -84,8 +86,11 @@ target_include_directories(parada2 PRIVATE
 target_link_libraries(parada2 
         hardware_spi
         hardware_i2c
+        hardware_uart
         hardware_timer
         hardware_watchdog
+
+        FatFs_SPI
         )
 
 pico_add_extra_outputs(parada2)
