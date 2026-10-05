@@ -25,7 +25,7 @@
 #define PIN_SCK  18
 #define PIN_MOSI 19
 
-#define SPI_BAUDRATE 1000000
+#define SPI_BAUDRATE (12500 * 1000)
 
 /* RADIO */
 #endif // HARDWARE_CONFIG__H
