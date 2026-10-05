@@ -63,7 +63,7 @@ add_executable(parada2
 
 )
 
-add_subdirectory(libs/no-OS-FatFS-SD-SPI-RPi-Pico/FatFs_SPI build)
+add_subdirectory(libs/no-OS-FatFS-SD-SDIO-SPI-RPi-Pico/src build)
 
 pico_set_program_name(parada2 "parada2")
 pico_set_program_version(parada2 "0.5")
@@ -90,7 +90,7 @@ target_link_libraries(parada2
         hardware_timer
         hardware_watchdog
 
-        FatFs_SPI
+        no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
         )
 
 pico_add_extra_outputs(parada2)
