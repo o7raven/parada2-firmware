@@ -14,7 +14,7 @@ typedef struct{
     float hdop,vdop,pdop;
     uint8_t sats_used, sats_in_view, fix_qty;
     uint8_t fix_type;
-
+    float knots;
 
 
 } gps_t;
