@@ -21,9 +21,14 @@
 /* SPI */
 #define SPI_PORT spi0
 #define PIN_MISO 16
-#define PIN_CS   17
 #define PIN_SCK  18
 #define PIN_MOSI 19
+
+// microsd
+#define PIN_CS 17
+#define MICROSD_DRIVE "0:"
+#define DATA_DIRECTORY "data"
+#define FILE_NAME_FORMAT "0:/data/data_%04lu.csv"
 
 #define SPI_BAUDRATE (12500 * 1000)
 
