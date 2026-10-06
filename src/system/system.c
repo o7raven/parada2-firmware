@@ -7,7 +7,9 @@
 #include <hardware/watchdog.h>
 #include <pico/time.h>
 
+#if SD_LOGGING_ENABLED
 #include "communication/microsd_layer.c"
+#endif
 
 volatile bool radio_is_due = false;
 repeating_timer_t radio_timer;
@@ -26,6 +28,7 @@ status_t system_init(void) {
   radio_callback_is_running = false;
 
   logging_init();
+  sleep_ms(BOOT_TIME_TO_INIT_ms);
   log_info("Info log working");
   log_warning("Warning log working");
   log_error("Error log working", STATUS_DUMMY_ERROR);
