@@ -18,13 +18,16 @@ status_t gps_init(gps_t* gps_handler, system_context_t* ctx){
     ctx->gps_found = false;
     gps_handler->lat = 0;
     gps_handler->lon = 0;
-    gps_handler->data_age = 0;
-    gps_handler->month = 0;
-    gps_handler->day= 0;
-    gps_handler->hour= 0;
-    gps_handler->minute= 0;
-    gps_handler->second= 0;
-    gps_handler->milisecond= 0;
+    gps_handler->alt = 0;
+    gps_handler->valid = 0;
+    gps_handler->time[0] = '\0';
+    gps_handler->hdop = 0;
+    gps_handler->vdop = 0;
+    gps_handler->pdop = 0;
+    gps_handler->sats_used = 0;
+    gps_handler->sats_in_view = 0;
+    gps_handler->fix_qty = 0;
+    gps_handler->fix_type = 0;
 
     uint rslt = uart_init(GPS_UART, GPS_BAUD);
     if(rslt != GPS_BAUD){

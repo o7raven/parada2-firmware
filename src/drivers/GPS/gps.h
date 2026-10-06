@@ -9,9 +9,13 @@
 
 typedef struct{
     uint8_t valid;
-    float lon, lat;
-    unsigned long data_age;
-    uint8_t month, day, hour, minute, second, milisecond;
+    float lon, lat, alt;
+    char time[16];
+    float hdop,vdop,pdop;
+    uint8_t sats_used, sats_in_view, fix_qty;
+    uint8_t fix_type;
+
+
 
 } gps_t;
 
