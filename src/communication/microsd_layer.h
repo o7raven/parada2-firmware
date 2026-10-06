@@ -39,7 +39,7 @@ status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors, gp
   "IMU_gZ" CSV_SEPARATOR "lat" CSV_SEPARATOR "lon" CSV_SEPARATOR               \
   "alt" CSV_SEPARATOR "time" CSV_SEPARATOR "hdop" CSV_SEPARATOR                \
   "vdop" CSV_SEPARATOR "pdop" CSV_SEPARATOR "sats_used" CSV_SEPARATOR          \
-  "sats_in_view" CSV_SEPARATOR "fix_qty" CSV_SEPARATOR "fix_t" CSV_SEPARATOR   \
+  "sats_in_view" CSV_SEPARATOR "fix_qty" CSV_SEPARATOR "fix_type" CSV_SEPARATOR   \
   "knots"
 #define CSV_FORMAT                                                             \
   "%lu" CSV_SEPARATOR "%d" CSV_SEPARATOR "%d" CSV_SEPARATOR "%d" CSV_SEPARATOR \
@@ -50,6 +50,7 @@ status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors, gp
   "%f" CSV_SEPARATOR "%f" CSV_SEPARATOR "%f" CSV_SEPARATOR "%f" CSV_SEPARATOR  \
   "%f" CSV_SEPARATOR "%f" CSV_SEPARATOR "%s" CSV_SEPARATOR "%f" CSV_SEPARATOR  \
   "%f" CSV_SEPARATOR "%f" CSV_SEPARATOR "%d" CSV_SEPARATOR "%d" CSV_SEPARATOR  \
-  "%d" CSV_SEPARATOR "%f" CSV_SEPARATOR "%f"
+  "%d" CSV_SEPARATOR "%f" CSV_SEPARATOR "%f"                                   \
+  "\r\n"
 
 #endif // __MICROSD_H__
