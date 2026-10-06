@@ -7,6 +7,7 @@
 #include "system/status.h"
 
 #include "system/state_machine.h"
+#include "communication/logging.h"
 
 status_t microsd_init(void);
 
