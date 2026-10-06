@@ -1,6 +1,7 @@
 #ifndef __MICROSD_H__
 #define __MICROSD_H__ 
 #include "config/hardware_config.h"
+#include "config/system_config.h"
 #include "hw_config.h"
 #include "system/status.h"
 
@@ -13,7 +14,7 @@ status_t microsd_write(const void *data, size_t size);
 status_t microsd_write_string(const char *str);
 bool microsd_is_recording(void);
 
-static uint32_t find_next_file_number(void);
+status_t find_next_file_number(uint32_t *next_file_number);
 
 status_t microsd_sync(void);
 
