@@ -18,4 +18,9 @@
 
 // GPS Configuration
 
+
+
+// MicroSD Configuration
+#define FILE_NAME_SIZE 32
+
 #endif // SYSTEM_CONFIG__H
