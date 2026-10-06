@@ -42,6 +42,7 @@ typedef enum {
   MICRO_SD_SYNC_ERROR,
   MICRO_SD_FILE_CLOSE,
   MICRO_SD_FILE_STATUS_ERROR,
+  MICRO_SD_CSV_NAME_ERROR,
 } status_t;
 // Expand the status_t typedef and split different modules into their own enums;
 #endif //STATUS__H
