@@ -91,6 +91,7 @@ status_t microsd_start_recording(void) {
   if (written < 0) {
     f_close(&file);
     return MICRO_SD_CSV_NAME_ERROR;
+  }
   recording = true;
   return STATUS_OK;
 }
