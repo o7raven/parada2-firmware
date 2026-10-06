@@ -6,7 +6,6 @@ static FIL file;
 static bool mounted = false;
 static bool recording = false;
 
-
 // Library definitions for the SPI interface and SD card
 static spi_t spi_sd = {
     .hw_inst = SPI_PORT,
@@ -96,8 +95,8 @@ status_t microsd_write(const void *data, size_t length) {
   if (!recording) {
     return MICRO_SD_NOT_RECORDING;
   }
-  if(!mounted){
-    return  MICRO_SD_NOT_MOUNTED;
+  if (!mounted) {
+    return MICRO_SD_NOT_MOUNTED;
   }
 
   UINT bytes_written;
@@ -106,7 +105,7 @@ status_t microsd_write(const void *data, size_t length) {
     return MICRO_SD_WRITE;
   }
 
-  if(bytes_written != length){
+  if (bytes_written != length) {
     return MICRO_SD_LENGTH_MISMATCH;
   }
 
@@ -117,8 +116,8 @@ status_t microsd_write_string(const char *str) {
   if (!recording) {
     return MICRO_SD_NOT_RECORDING;
   }
-  if(!mounted){
-    return  MICRO_SD_NOT_MOUNTED;
+  if (!mounted) {
+    return MICRO_SD_NOT_MOUNTED;
   }
 
   UINT bytes_written;
@@ -129,28 +128,28 @@ status_t microsd_write_string(const char *str) {
 
   return STATUS_OK;
 }
-status_t microsd_sync(void){
+status_t microsd_sync(void) {
   if (!recording) {
     return MICRO_SD_NOT_RECORDING;
   }
-  if(!mounted){
-    return  MICRO_SD_NOT_MOUNTED;
+  if (!mounted) {
+    return MICRO_SD_NOT_MOUNTED;
   }
-    
-    FRESULT res = f_sync(&file);
-    if (res != FR_OK) {
-        return MICRO_SD_SYNC_ERROR;
-    }
-    
-    return STATUS_OK;
+
+  FRESULT res = f_sync(&file);
+  if (res != FR_OK) {
+    return MICRO_SD_SYNC_ERROR;
+  }
+
+  return STATUS_OK;
 }
 
 status_t microsd_stop_recording(void) {
   if (!recording) {
     return MICRO_SD_NOT_RECORDING;
   }
-  if(!mounted){
-    return  MICRO_SD_NOT_MOUNTED;
+  if (!mounted) {
+    return MICRO_SD_NOT_MOUNTED;
   }
 
   FRESULT res = f_close(&file);
@@ -185,5 +184,37 @@ status_t find_next_file_number(uint32_t *next_file_number) {
     }
   }
 
-  return MICRO_SD_FILE_NUMBER_ERROR; 
+  return MICRO_SD_FILE_NUMBER_ERROR;
+}
+
+status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors,
+                            gps_t *gps_data) {
+  if (!recording) {
+    return MICRO_SD_NOT_RECORDING;
+  }
+  if (!mounted) {
+    return MICRO_SD_NOT_MOUNTED;
+  }
+
+  static uint32_t id = 1;
+
+  FRESULT res = f_printf(
+      &file, CSV_FORMAT, id++, system_ctx->radio_ok, system_ctx->power_ok,
+      system_ctx->low_battery, system_ctx->critical_fault,
+      system_ctx->gps_found, system_ctx->radio_connected,
+      system_ctx->sensors.bme280_ok, system_ctx->sensors.hmc5883l_ok,
+      system_ctx->sensors.imu_ok, system_ctx->sensors.sensors_ok,
+      sensors->bme280.pressure, sensors->bme280.temperature,
+      sensors->bme280.humidity, sensors->hmc.x_axis, sensors->hmc.y_axis,
+      sensors->hmc.z_axis, sensors->imu.acc_X, sensors->imu.acc_Y,
+      sensors->imu.acc_Z, sensors->imu.gyro_X, sensors->imu.gyro_Y,
+      sensors->imu.gyro_Z, gps_data->lat, gps_data->lon, gps_data->alt,
+      gps_data->time, gps_data->hdop, gps_data->vdop, gps_data->pdop,
+      gps_data->sats_used, gps_data->sats_in_view, gps_data->fix_qty,
+      gps_data->fix_type);
+  if (res != FR_OK) {
+    return MICRO_SD_WRITE;
+  }
+
+  return STATUS_OK;
 }
