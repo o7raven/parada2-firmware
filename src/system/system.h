@@ -14,6 +14,7 @@
 
 #include "hardware/watchdog.h"
 #include <pico/time.h>
+#include "communication/microsd_layer.h"
 
 static state_machine_t system_state_machine;
 static system_context_t system_ctx;

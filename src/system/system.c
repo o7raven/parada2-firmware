@@ -7,6 +7,8 @@
 #include <hardware/watchdog.h>
 #include <pico/time.h>
 
+#include "communication/microsd_layer.c"
+
 volatile bool radio_is_due = false;
 repeating_timer_t radio_timer;
 bool radio_callback_is_running = false;
@@ -47,6 +49,16 @@ status_t system_init(void) {
     log_success("Communication initialization successful");
   }
 
+  /*
+  MICROSD
+  */
+  if(microsd_init() != STATUS_OK){
+    log_error("MicroSD initialization failed", STATUS_ERROR);
+  }
+  /*
+  MICROSD
+  */
+
   sleep_ms(BOOT_TIME_TO_INIT_ms);
 
   init_status = init_sensors(&sensors, &system_ctx.sensors);
@@ -79,6 +91,19 @@ status_t system_init(void) {
   sleep_ms(BOOT_TIME_TO_INIT_ms);
   // @Watchdog
   watchdog_enable(WATCHDOG_TIMEOUT_ms+DATA_COLLECTION_PERIOD_ms, WATCHDOG_PAUSE_ON_DBG);
+
+  if(microsd_start_recording() != STATUS_OK){
+    log_error("MicroSD recording failed", STATUS_ERROR);
+  }
+
+  if(microsd_write("Hello",5)!= STATUS_OK){
+    log_error("MicroSD write failed", STATUS_ERROR);
+  }
+
+  log_info("MicroSD write test should be successful");
+  if(microsd_stop_recording() != STATUS_OK){
+    log_error("MicroSD stop recording failed", STATUS_ERROR);
+  }
 
   log_success("Initialization complete");
   log_context(&system_ctx);
