@@ -56,12 +56,12 @@ status_t microsd_init(void) {
     return MICRO_SD_MOUNT;
   }
 
-  mounted = true;
 
   res = f_mkdir(MICROSD_DRIVE "/" DATA_DIRECTORY);
   if (res != FR_OK && res != FR_EXIST) {
     return MICRO_SD_DIRECTORY_CREATION;
   }
+  mounted = true;
   return STATUS_OK;
 }
 
@@ -87,6 +87,10 @@ status_t microsd_start_recording(void) {
     return MICRO_SD_FILE_OPEN;
   }
 
+  int written = f_printf(&file, "%s\r\n", CSV_NAMES);
+  if (written < 0) {
+    f_close(&file);
+    return MICRO_SD_CSV_NAME_ERROR;
   recording = true;
   return STATUS_OK;
 }
