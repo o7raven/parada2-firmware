@@ -1,13 +1,14 @@
 #ifndef __MICROSD_H__
-#define __MICROSD_H__ 
+#define __MICROSD_H__
+#if SD_LOGGING_ENABLED
 #include "config/hardware_config.h"
 #include "config/system_config.h"
-#include "hw_config.h"
 #include "drivers/GPS/gps.h"
+#include "hw_config.h"
 #include "system/status.h"
 
-#include "system/state_machine.h"
 #include "communication/logging.h"
+#include "system/state_machine.h"
 
 status_t microsd_init(void);
 
@@ -22,7 +23,8 @@ status_t find_next_file_number(uint32_t *next_file_number);
 
 status_t microsd_sync(void);
 
-status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors, gps_t *gps_data);
+status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors,
+                            gps_t *gps_data);
 
 // AI generated for saving time
 #define CSV_SEPARATOR ";"
@@ -39,8 +41,8 @@ status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors, gp
   "IMU_gZ" CSV_SEPARATOR "lat" CSV_SEPARATOR "lon" CSV_SEPARATOR               \
   "alt" CSV_SEPARATOR "time" CSV_SEPARATOR "hdop" CSV_SEPARATOR                \
   "vdop" CSV_SEPARATOR "pdop" CSV_SEPARATOR "sats_used" CSV_SEPARATOR          \
-  "sats_in_view" CSV_SEPARATOR "fix_qty" CSV_SEPARATOR "fix_type" CSV_SEPARATOR   \
-  "knots"
+  "sats_in_view" CSV_SEPARATOR "fix_qty" CSV_SEPARATOR                         \
+  "fix_type" CSV_SEPARATOR "knots"
 #define CSV_FORMAT                                                             \
   "%lu" CSV_SEPARATOR "%d" CSV_SEPARATOR "%d" CSV_SEPARATOR "%d" CSV_SEPARATOR \
   "%d" CSV_SEPARATOR "%d" CSV_SEPARATOR "%d" CSV_SEPARATOR "%d" CSV_SEPARATOR  \
@@ -53,4 +55,5 @@ status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors, gp
   "%d" CSV_SEPARATOR "%f" CSV_SEPARATOR "%f"                                   \
   "\r\n"
 
+#endif // SD_LOGGING_ENABLED
 #endif // __MICROSD_H__

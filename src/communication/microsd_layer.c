@@ -1,3 +1,4 @@
+#if SD_LOGGING_ENABLED
 #include "microsd_layer.h"
 
 static FATFS fs;
@@ -222,3 +223,4 @@ status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors,
   log_info("Data written to MicroSD: %d bytes", written);
   return STATUS_OK;
 }
+#endif // SD_LOGGING_ENABLED
