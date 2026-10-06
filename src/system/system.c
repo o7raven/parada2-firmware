@@ -48,12 +48,14 @@ status_t system_init(void) {
   }
 
 
+  #if SD_LOGGING_ENABLED
   init_status = microsd_init();
   if (init_status != STATUS_OK) {
     log_error("MicroSD initialization failed", STATUS_ERROR);
   } else {
     log_success("MicroSD initialization successful");
   }
+  #endif
 
   sleep_ms(BOOT_TIME_TO_INIT_ms);
 
@@ -128,6 +130,7 @@ void create_radio_timer(system_state_t state) {
   }
 }
 
+
 static int microsd_testing = 0;
 void system_run(void) {
   log_info("Starting system run loop ...");
@@ -150,6 +153,7 @@ void system_run(void) {
       radio_is_due = false;
       send_data(&sensors, &gps_data, &system_ctx);
 
+      #if SD_LOGGING_ENABLED
       if (microsd_testing < 10) {
         microsd_testing++;
         if (microsd_start_recording() != STATUS_OK) {
@@ -167,6 +171,7 @@ void system_run(void) {
       }else {
         log_info("MicroSD write test completed");
       }
+      #endif
     }
 
     // @Watchdog

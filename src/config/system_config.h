@@ -22,5 +22,6 @@
 
 // MicroSD Configuration
 #define FILE_NAME_SIZE 32
+#define SD_LOGGING_ENABLED 0
 
 #endif // SYSTEM_CONFIG__H
