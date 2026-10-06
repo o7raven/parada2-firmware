@@ -17,10 +17,8 @@ status_t system_init(void) {
 
   // @Note debugging purposes (remove later)
   system_ctx.power_ok = true;
-  system_ctx.low_battery = false; 
+  system_ctx.low_battery = false;
   system_ctx.critical_fault = false;
-
-
 
   status_t init_status = STATUS_OK;
 
@@ -33,7 +31,7 @@ status_t system_init(void) {
   log_error("Error log working", STATUS_DUMMY_ERROR);
   log_success("Success log working");
 
-  if(watchdog_caused_reboot()){
+  if (watchdog_caused_reboot()) {
     log_warning("Watchdog has caused a reboot!");
     sleep_ms(500);
   }
@@ -45,27 +43,24 @@ status_t system_init(void) {
   if (init_status != STATUS_OK) {
     log_error("Communication initialization failed", init_status);
     return init_status;
-  }else{
+  } else {
     log_success("Communication initialization successful");
   }
 
-  /*
-  MICROSD
-  */
-  if(microsd_init() != STATUS_OK){
+
+  init_status = microsd_init();
+  if (init_status != STATUS_OK) {
     log_error("MicroSD initialization failed", STATUS_ERROR);
+  } else {
+    log_success("MicroSD initialization successful");
   }
-  /*
-  MICROSD
-  */
 
   sleep_ms(BOOT_TIME_TO_INIT_ms);
 
   init_status = init_sensors(&sensors, &system_ctx.sensors);
   if (init_status != STATUS_OK) {
     log_warning("Sensors initialization failed");
-  }
-  else{
+  } else {
     log_success("Sensors initialization successful");
   }
   sleep_ms(BOOT_TIME_TO_INIT_ms);
@@ -73,8 +68,7 @@ status_t system_init(void) {
   init_status = gps_init(&gps_data, &system_ctx);
   if (init_status != STATUS_OK) {
     log_error("GPS UART initialization failed", init_status);
-  }
-  else{
+  } else {
     log_success("GPS UART initialization successful");
   }
 
@@ -83,25 +77,25 @@ status_t system_init(void) {
   init_status = state_machine_init(&system_state_machine);
   if (init_status != STATUS_OK) {
     log_error("State machine initialization failed", init_status);
-  }
-  else{
+  } else {
     log_success("State machine initialization successful");
   }
 
   sleep_ms(BOOT_TIME_TO_INIT_ms);
   // @Watchdog
-  watchdog_enable(WATCHDOG_TIMEOUT_ms+DATA_COLLECTION_PERIOD_ms, WATCHDOG_PAUSE_ON_DBG);
+  watchdog_enable(WATCHDOG_TIMEOUT_ms + DATA_COLLECTION_PERIOD_ms,
+                  WATCHDOG_PAUSE_ON_DBG);
 
-  if(microsd_start_recording() != STATUS_OK){
+  if (microsd_start_recording() != STATUS_OK) {
     log_error("MicroSD recording failed", STATUS_ERROR);
   }
 
-  if(microsd_write("Hello",5)!= STATUS_OK){
+  if (microsd_write("Hello", 5) != STATUS_OK) {
     log_error("MicroSD write failed", STATUS_ERROR);
   }
 
   log_info("MicroSD write test should be successful");
-  if(microsd_stop_recording() != STATUS_OK){
+  if (microsd_stop_recording() != STATUS_OK) {
     log_error("MicroSD stop recording failed", STATUS_ERROR);
   }
 
@@ -111,7 +105,6 @@ status_t system_init(void) {
 
   return STATUS_OK;
 }
-
 
 bool radio_callback(struct repeating_timer *t) {
   radio_is_due = true;
@@ -126,12 +119,12 @@ void create_radio_timer(system_state_t state) {
   switch (state) {
     // duplicity fix later
   case STATE_RUN:
-    radio_callback_is_running = add_repeating_timer_ms(RUN_STATE_PACKET_FREQUENCY_ms, &radio_callback,
-                           false, &radio_timer);
+    radio_callback_is_running = add_repeating_timer_ms(
+        RUN_STATE_PACKET_FREQUENCY_ms, &radio_callback, false, &radio_timer);
     break;
   case STATE_SAFE:
-    radio_callback_is_running = add_repeating_timer_ms(SAFE_STATE_PACKET_FREQUENCY_ms, &radio_callback,
-                           false, &radio_timer);
+    radio_callback_is_running = add_repeating_timer_ms(
+        SAFE_STATE_PACKET_FREQUENCY_ms, &radio_callback, false, &radio_timer);
     break;
   case STATE_ERROR:
     cancel_repeating_timer(&radio_timer);
@@ -141,10 +134,10 @@ void create_radio_timer(system_state_t state) {
     log_warning("Entered unknown state");
     break;
   }
-  if(radio_callback_is_running){
+  if (radio_callback_is_running) {
     log_success("Interrupt created sucessfully");
-  }else{
-    log_error("There has been an error creating the interrupt",STATUS_ERROR);
+  } else {
+    log_error("There has been an error creating the interrupt", STATUS_ERROR);
   }
 }
 
@@ -152,7 +145,7 @@ void system_run(void) {
   log_info("Starting system run loop ...");
 
   while (1) {
-    if(state_machine_changed()){
+    if (state_machine_changed()) {
       create_radio_timer(system_state_machine.current_state);
     }
 
@@ -164,7 +157,7 @@ void system_run(void) {
     state_machine_step(&system_state_machine, &system_ctx);
     system_work();
 
-    if(radio_is_due){
+    if (radio_is_due) {
       log_info("Radio transmission is due");
       radio_is_due = false;
       send_data(&sensors, &gps_data, &system_ctx);
@@ -177,8 +170,7 @@ void system_run(void) {
   }
 }
 
-
-void system_work(void){
-      read_sensors(&sensors, &system_ctx.sensors);
-      get_location(&gps_data, &system_ctx);
+void system_work(void) {
+  read_sensors(&sensors, &system_ctx.sensors);
+  get_location(&gps_data, &system_ctx);
 }
