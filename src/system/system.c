@@ -86,19 +86,6 @@ status_t system_init(void) {
   watchdog_enable(WATCHDOG_TIMEOUT_ms + DATA_COLLECTION_PERIOD_ms,
                   WATCHDOG_PAUSE_ON_DBG);
 
-  if (microsd_start_recording() != STATUS_OK) {
-    log_error("MicroSD recording failed", STATUS_ERROR);
-  }
-
-  if (microsd_write("Hello", 5) != STATUS_OK) {
-    log_error("MicroSD write failed", STATUS_ERROR);
-  }
-
-  log_info("MicroSD write test should be successful");
-  if (microsd_stop_recording() != STATUS_OK) {
-    log_error("MicroSD stop recording failed", STATUS_ERROR);
-  }
-
   log_success("Initialization complete");
   log_context(&system_ctx);
   log_info("State machine starting ... ");
@@ -141,6 +128,7 @@ void create_radio_timer(system_state_t state) {
   }
 }
 
+static int microsd_testing = 0;
 void system_run(void) {
   log_info("Starting system run loop ...");
 
@@ -161,6 +149,24 @@ void system_run(void) {
       log_info("Radio transmission is due");
       radio_is_due = false;
       send_data(&sensors, &gps_data, &system_ctx);
+
+      if (microsd_testing < 10) {
+        microsd_testing++;
+        if (microsd_start_recording() != STATUS_OK) {
+          log_error("MicroSD recording failed", STATUS_ERROR);
+        }
+
+        if (write_data_to_file(&system_ctx, &sensors, &gps_data) != STATUS_OK) {
+          log_error("MicroSD write failed", STATUS_ERROR);
+        }
+
+        log_info("MicroSD write test should be successful");
+        if (microsd_stop_recording() != STATUS_OK) {
+          log_error("MicroSD stop recording failed", STATUS_ERROR);
+        }
+      }else {
+        log_info("MicroSD write test completed");
+      }
     }
 
     // @Watchdog
