@@ -6,6 +6,8 @@ static FIL file;
 static bool mounted = false;
 static bool recording = false;
 
+
+// Library definitions for the SPI interface and SD card
 static spi_t spi_sd = {
     .hw_inst = SPI_PORT,
 
@@ -48,44 +50,42 @@ spi_t *spi_get_by_num(size_t num) {
 
 status_t microsd_init(void) {
   if (!sd_init_driver()) {
-    return STATUS_ERROR;
+    return MICRO_SD_INIT;
   }
-  FRESULT res = f_mount(&fs,MICROSD_DRIVE ,1);
+  FRESULT res = f_mount(&fs, MICROSD_DRIVE, 1);
   if (res != FR_OK) {
-    return STATUS_ERROR;
+    return MICRO_SD_MOUNT;
   }
 
   mounted = true;
 
   res = f_mkdir(MICROSD_DRIVE "/" DATA_DIRECTORY);
   if (res != FR_OK && res != FR_EXIST) {
-    return STATUS_ERROR;
+    return MICRO_SD_DIRECTORY_CREATION;
   }
   return STATUS_OK;
 }
 
 status_t microsd_start_recording(void) {
   if (!mounted) {
-    //return not mounted error
-    return STATUS_ERROR;
+    return MICRO_SD_NOT_MOUNTED;
   }
 
   if (recording) {
-    //return alraedy recording error
-    return STATUS_ERROR;
+    return MICRO_SD_ALREADY_RECORDING;
   }
 
-  uint32_t file_number = find_next_file_number();
-  if (file_number == 0) {
-    return STATUS_ERROR;
+  uint32_t file_number;
+  if (find_next_file_number(&file_number) != STATUS_OK) {
+    return MICRO_SD_FILE_NUMBER_ERROR;
   }
 
-  char filename[64];
+  char filename[FILE_NAME_SIZE];
   snprintf(filename, sizeof(filename), FILE_NAME_FORMAT,
            (unsigned long)file_number);
   FRESULT res = f_open(&file, filename, FA_WRITE | FA_CREATE_NEW);
   if (res != FR_OK) {
-    return STATUS_ERROR;
+    return MICRO_SD_FILE_OPEN;
   }
 
   recording = true;
@@ -93,57 +93,69 @@ status_t microsd_start_recording(void) {
 }
 
 status_t microsd_write(const void *data, size_t length) {
-  if (!recording || !mounted) {
-    return STATUS_ERROR;
+  if (!recording) {
+    return MICRO_SD_NOT_RECORDING;
+  }
+  if(!mounted){
+    return  MICRO_SD_NOT_MOUNTED;
   }
 
   UINT bytes_written;
   FRESULT res = f_write(&file, data, length, &bytes_written);
   if (res != FR_OK || bytes_written != length) {
-    return STATUS_ERROR;
+    return MICRO_SD_WRITE;
   }
 
   if(bytes_written != length){
-    return STATUS_ERROR;
+    return MICRO_SD_LENGTH_MISMATCH;
   }
 
   return STATUS_OK;
 }
 
 status_t microsd_write_string(const char *str) {
-  if (!recording || !mounted) {
-    return STATUS_ERROR;
+  if (!recording) {
+    return MICRO_SD_NOT_RECORDING;
+  }
+  if(!mounted){
+    return  MICRO_SD_NOT_MOUNTED;
   }
 
   UINT bytes_written;
   FRESULT res = f_puts(str, &file);
   if (res < 0) {
-    return STATUS_ERROR;
+    return MICRO_SD_STRING_WRITE;
   }
 
   return STATUS_OK;
 }
 status_t microsd_sync(void){
-    if (!recording || !mounted) {
-        return STATUS_ERROR;
-    }
+  if (!recording) {
+    return MICRO_SD_NOT_RECORDING;
+  }
+  if(!mounted){
+    return  MICRO_SD_NOT_MOUNTED;
+  }
     
     FRESULT res = f_sync(&file);
     if (res != FR_OK) {
-        return STATUS_ERROR;
+        return MICRO_SD_SYNC_ERROR;
     }
     
     return STATUS_OK;
 }
 
 status_t microsd_stop_recording(void) {
-  if (!recording || !mounted) {
-    return STATUS_ERROR;
+  if (!recording) {
+    return MICRO_SD_NOT_RECORDING;
+  }
+  if(!mounted){
+    return  MICRO_SD_NOT_MOUNTED;
   }
 
   FRESULT res = f_close(&file);
   if (res != FR_OK) {
-    return STATUS_ERROR;
+    return MICRO_SD_FILE_CLOSE;
   }
 
   recording = false;
@@ -152,11 +164,11 @@ status_t microsd_stop_recording(void) {
 
 bool microsd_is_recording(void) { return recording; }
 
-static uint32_t find_next_file_number(void) {
+status_t find_next_file_number(uint32_t *next_file_number) {
   FILINFO info;
   char filename[64];
 
-  // only for now @NOTE change
+  // 1000 iterations is the worst case scenario that won't ever happen.
   for (uint32_t i = 1; i < 10000; i++) {
 
     snprintf(filename, sizeof(filename), FILE_NAME_FORMAT, (unsigned long)i);
@@ -164,13 +176,14 @@ static uint32_t find_next_file_number(void) {
     FRESULT result = f_stat(filename, &info);
 
     if (result == FR_NO_FILE) {
-      return i;
+      *next_file_number = i;
+      return STATUS_OK;
     }
 
     if (result != FR_OK) {
-      return 0;
+      return MICRO_SD_FILE_STATUS_ERROR;
     }
   }
 
-  return 0;
+  return MICRO_SD_FILE_NUMBER_ERROR; 
 }
