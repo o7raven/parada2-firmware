@@ -90,8 +90,13 @@ target_link_libraries(parada2
         hardware_timer
         hardware_watchdog
 
-        no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
         )
+
+if(SD_LOGGING_ENABLED)
+    target_link_libraries(parada2
+        no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
+    )
+endif()
 
 pico_add_extra_outputs(parada2)
 
