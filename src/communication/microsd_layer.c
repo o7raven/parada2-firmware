@@ -198,8 +198,8 @@ status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors,
 
   static uint32_t id = 1;
 
-   int res = f_printf(
-      &file, CSV_FORMAT, id++, system_ctx->radio_ok, system_ctx->power_ok,
+   int written = f_printf(
+      &file, CSV_FORMAT, (unsigned long)id++, system_ctx->radio_ok, system_ctx->power_ok,
       system_ctx->low_battery, system_ctx->critical_fault,
       system_ctx->gps_found, system_ctx->radio_connected,
       system_ctx->sensors.bme280_ok, system_ctx->sensors.hmc5883l_ok,
@@ -211,10 +211,10 @@ status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors,
       sensors->imu.gyro_Z, gps_data->lat, gps_data->lon, gps_data->alt,
       gps_data->time, gps_data->hdop, gps_data->vdop, gps_data->pdop,
       gps_data->sats_used, gps_data->sats_in_view, gps_data->fix_qty,
-      gps_data->fix_type);
-  if (res < 0) {
+      gps_data->fix_type, gps_data->knots);
+  if (written < 0) {
     return MICRO_SD_WRITE;
   }
-  log_info("Data written to MicroSD: %d bytes", res);
+  log_info("Data written to MicroSD: %d bytes", written);
   return STATUS_OK;
 }
