@@ -101,7 +101,7 @@ status_t microsd_write(const void *data, size_t length) {
 
   UINT bytes_written;
   FRESULT res = f_write(&file, data, length, &bytes_written);
-  if (res != FR_OK || bytes_written != length) {
+  if (res != FR_OK) {
     return MICRO_SD_WRITE;
   }
 
@@ -120,7 +120,6 @@ status_t microsd_write_string(const char *str) {
     return MICRO_SD_NOT_MOUNTED;
   }
 
-  UINT bytes_written;
   FRESULT res = f_puts(str, &file);
   if (res < 0) {
     return MICRO_SD_STRING_WRITE;
