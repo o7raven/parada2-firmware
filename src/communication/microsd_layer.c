@@ -78,24 +78,29 @@ status_t microsd_start_recording(void) {
     return MICRO_SD_ALREADY_RECORDING;
   }
 
-  uint32_t file_number;
-  if (find_next_file_number(&file_number) != STATUS_OK) {
-    return MICRO_SD_FILE_NUMBER_ERROR;
+  static uint32_t file_number;
+  if(!opened_once){
+    if (find_next_file_number(&file_number) != STATUS_OK) {
+      return MICRO_SD_FILE_NUMBER_ERROR;
+    }
   }
 
   char filename[FILE_NAME_SIZE];
   snprintf(filename, sizeof(filename), FILE_NAME_FORMAT,
            (unsigned long)file_number);
-  FRESULT res = f_open(&file, filename, FA_WRITE | FA_CREATE_NEW);
+  FRESULT res = f_open(&file, filename, FA_WRITE | FA_OPEN_APPEND);
   if (res != FR_OK) {
     return MICRO_SD_FILE_OPEN;
   }
+  if (!opened_once) {
 
-  int written = f_printf(&file, "%s\r\n", CSV_NAMES);
-  if (written < 0) {
-    f_close(&file);
-    return MICRO_SD_CSV_NAME_ERROR;
+    int written = f_printf(&file, "%s\r\n", CSV_NAMES);
+    if (written < 0) {
+      f_close(&file);
+      return MICRO_SD_CSV_NAME_ERROR;
+    }
   }
+  opened_once = true;
   recording = true;
   return STATUS_OK;
 }
@@ -183,7 +188,7 @@ status_t find_next_file_number(uint32_t *next_file_number) {
     FRESULT result = f_stat(filename, &info);
 
     if (result == FR_NO_FILE) {
-      *next_file_number = i-opened_once;
+      *next_file_number = i;
       return STATUS_OK;
     }
 
