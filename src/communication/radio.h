@@ -1,23 +1,8 @@
 #ifndef _RADIO__H_
+#define _RADIO__H_
 
 #include "system/status.h"
-#include "sensors/sensors.h"
-#include "drivers/GPS/gps.h"
-#include "sensors/sensors.h"
-#include "system/state_machine.h"
 
+status_t init_radio();
 
-typedef struct __attribute__((packed)){
-    uint32_t packet_id;
-
-} packet_t;
-
-packet_t create_packet(sensors_t* sensors, gps_t* gps, system_context_t* ctx);
-
-status_t send_packet(packet_t* create_packet);
-status_t send_data(sensors_t* _s_handler, gps_t* _gps_handler, system_context_t* _ctx_handler);
-
-status_t init_radio(system_context_t* ctx);
-
-#define _RADIO__H_
 #endif // _RADIO__H_
