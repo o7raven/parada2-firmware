@@ -11,6 +11,7 @@
 
 #include "communication/logging.h"
 #include "system/state_machine.h"
+#include "telemetry/packet.h"
 
 status_t microsd_init(void);
 

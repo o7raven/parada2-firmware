@@ -1,4 +1,5 @@
 #include "config/system_config.h"
+#include "ff.h"
 #if SD_LOGGING_ENABLED
 #include "microsd_layer.h"
 
@@ -231,4 +232,23 @@ status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors,
   log_info("Data written to MicroSD: %d bytes", written);
   return STATUS_OK;
 }
+/*
+Possibly useless if solution used -> buffer data and write after Xs`
+status_t write_packet(packet_t *packet){
+  if (!recording) {
+    return MICRO_SD_NOT_RECORDING;
+  }
+  if (!mounted) {
+    return MICRO_SD_NOT_MOUNTED;
+  }
+
+  int written = f_printf(&file, "blabla");
+
+  if (written < 0) {
+    return MICRO_SD_WRITE;
+  }
+  log_info("Packet written to MicroSD: %d bytes", written);
+
+}
+  */
 #endif // SD_LOGGING_ENABLED
