@@ -1,3 +1,4 @@
+#include "config/system_config.h"
 #if SD_LOGGING_ENABLED
 #include "microsd_layer.h"
 
@@ -181,6 +182,7 @@ status_t find_next_file_number(uint32_t *next_file_number) {
 
     if (result == FR_NO_FILE) {
       *next_file_number = i;
+      log_info("Next file number found: %d", i);
       return STATUS_OK;
     }
 

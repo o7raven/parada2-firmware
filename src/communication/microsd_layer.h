@@ -1,8 +1,10 @@
 #ifndef __MICROSD_H__
 #define __MICROSD_H__
+
+
+#include "config/system_config.h"
 #if SD_LOGGING_ENABLED
 #include "config/hardware_config.h"
-#include "config/system_config.h"
 #include "drivers/GPS/gps.h"
 #include "hw_config.h"
 #include "system/status.h"
