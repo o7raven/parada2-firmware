@@ -16,6 +16,7 @@ int main(void)
         for(;;){
             // Stay here if system initialization fails
             // Add recovery later
+            // for now watchdog reboot
         }
     }
 
