@@ -1,11 +1,12 @@
 #include "system.h"
 #include "communication/logging.h"
-#include "communication/radio.h"
 #include "config/system_config.h"
 #include "system/state_machine.h"
 #include "system/status.h"
 #include <hardware/watchdog.h>
 #include <pico/time.h>
+
+#include "telemetry/packet.h"
 
 #if SD_LOGGING_ENABLED
 #include "communication/microsd_layer.c"
@@ -138,9 +139,13 @@ static int microsd_testing = 0;
 void system_run(void) {
   log_info("Starting system run loop ...");
 
+  packet_t system_packet;
   while (1) {
     if (state_machine_changed()) {
       create_radio_timer(system_state_machine.current_state);
+    }else{
+      system_packet = create_packet(&system_state_machine, &system_ctx,
+                                    &sensors, &gps_data);
     }
 
     // @Note create a task with instead of log every loop
@@ -154,8 +159,9 @@ void system_run(void) {
     if (radio_is_due) {
       log_info("Radio transmission is due");
       radio_is_due = false;
-      send_data(&sensors, &gps_data, &system_ctx);
+      //send_data(&sensors, &gps_data, &system_ctx);
 
+      // @Note not good implementation change asap
       #if SD_LOGGING_ENABLED
       if (microsd_testing < 10) {
         microsd_testing++;
