@@ -7,6 +7,8 @@ static FIL file;
 static bool mounted = false;
 static bool recording = false;
 
+static bool opened_once = false;
+
 // Library definitions for the SPI interface and SD card
 static spi_t spi_sd = {
     .hw_inst = SPI_PORT,
@@ -180,7 +182,7 @@ status_t find_next_file_number(uint32_t *next_file_number) {
     FRESULT result = f_stat(filename, &info);
 
     if (result == FR_NO_FILE) {
-      *next_file_number = i;
+      *next_file_number = i-opened_once;
       return STATUS_OK;
     }
 
