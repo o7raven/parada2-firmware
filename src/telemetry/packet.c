@@ -12,6 +12,7 @@ packet_t create_packet(state_machine_t *state ,system_context_t *sys_ctx, sensor
     packet.system_ctx = *sys_ctx;
     packet.sensors = *sensors;
     packet.gps_data = *gps_data;
+    packet.crc16 = 420;
 
 
     
