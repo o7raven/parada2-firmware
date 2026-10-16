@@ -1,5 +1,7 @@
 #include "config/system_config.h"
 #include "ff.h"
+#include "system/status.h"
+#include <string.h>
 #if SD_LOGGING_ENABLED
 #include "microsd_layer.h"
 
@@ -201,37 +203,52 @@ status_t find_next_file_number(uint32_t *next_file_number) {
   return MICRO_SD_FILE_NUMBER_ERROR;
 }
 
-status_t write_data_to_file(system_context_t *system_ctx, sensors_t *sensors,
-                            gps_t *gps_data) {
+
+
+static int microsd_testing = 0;
+status_t write_packet(packet_t *sys_packet){
+  /*
   if (!recording) {
     return MICRO_SD_NOT_RECORDING;
   }
   if (!mounted) {
     return MICRO_SD_NOT_MOUNTED;
   }
-
-  static uint32_t id = 1;
-
-   int written = f_printf(
-      &file, CSV_FORMAT, (unsigned long)id++, system_ctx->radio_ok, system_ctx->power_ok,
-      system_ctx->low_battery, system_ctx->critical_fault,
-      system_ctx->gps_found, system_ctx->radio_connected,
-      system_ctx->sensors.bme280_ok, system_ctx->sensors.hmc5883l_ok,
-      system_ctx->sensors.imu_ok, system_ctx->sensors.sensors_ok,
-      sensors->bme280.pressure, sensors->bme280.temperature,
-      sensors->bme280.humidity, sensors->hmc.x_axis, sensors->hmc.y_axis,
-      sensors->hmc.z_axis, sensors->imu.acc_X, sensors->imu.acc_Y,
-      sensors->imu.acc_Z, sensors->imu.gyro_X, sensors->imu.gyro_Y,
-      sensors->imu.gyro_Z, gps_data->lat, gps_data->lon, gps_data->alt,
-      gps_data->time, gps_data->hdop, gps_data->vdop, gps_data->pdop,
-      gps_data->sats_used, gps_data->sats_in_view, gps_data->fix_qty,
-      gps_data->fix_type, gps_data->knots);
-  if (written < 0) {
-    return MICRO_SD_WRITE;
+  if(sys_packet == NULL){
+    // @Note status empty packet
+    return STATUS_NOT_IMPLEMENTED;
   }
-  log_info("Data written to MicroSD: %d bytes", written);
-  return STATUS_OK;
+    */
+  static int sync_interval = 0;
+        if (microsd_testing < 10) {
+          microsd_testing++;
+          if (microsd_start_recording() != STATUS_OK) {
+            log_error("MicroSD recording failed", STATUS_ERROR);
+          }
+
+          int written = f_printf(&file, CSV_FORMAT,
+                                 CSV_FIRST(CSV_VALUE_FIRST, sys_packet)
+                                     CSV_REST(CSV_VALUE_REST, sys_packet));
+
+          if (written > 0) 
+            {
+              log_info("MicroSD write test should be successful");
+            }
+            if (microsd_stop_recording() != STATUS_OK) {
+              log_error("MicroSD stop recording failed", STATUS_ERROR);
+            }
+            if (sync_interval > 4) {
+              f_sync(&file);
+              sync_interval = 0;
+            }
+          } else {
+            log_info("MicroSD write test completed");
+          }
+
+        
+          return STATUS_NOT_IMPLEMENTED;
 }
+
 /*
 Possibly useless if solution used -> buffer data and write after Xs`
 status_t write_packet(packet_t *packet){
