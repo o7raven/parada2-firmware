@@ -1,5 +1,7 @@
 #include "system.h"
 #include "communication/logging.h"
+#include "communication/microsd_layer.h"
+#include "communication/radio.h"
 #include "config/system_config.h"
 #include "system/state_machine.h"
 #include "system/status.h"
@@ -12,9 +14,9 @@
 #include "communication/microsd_layer.c"
 #endif
 
-volatile bool radio_is_due = false;
-repeating_timer_t radio_timer;
-bool radio_callback_is_running = false;
+volatile bool telemetry_is_due = false;
+repeating_timer_t telemetry_timer;
+bool telemetry_callback_is_running = false;
 
 status_t system_init(void) {
 
@@ -25,8 +27,8 @@ status_t system_init(void) {
 
   status_t init_status = STATUS_OK;
 
-  radio_is_due = false;
-  radio_callback_is_running = false;
+  telemetry_is_due = false;
+  telemetry_callback_is_running = false;
 
   logging_init();
   sleep_ms(BOOT_TIME_TO_INIT_ms);
@@ -51,15 +53,14 @@ status_t system_init(void) {
     log_success("Communication initialization successful");
   }
 
-
-  #if SD_LOGGING_ENABLED
+#if SD_LOGGING_ENABLED
   init_status = microsd_init();
   if (init_status != STATUS_OK) {
     log_error("MicroSD initialization failed", STATUS_ERROR);
   } else {
     log_success("MicroSD initialization successful");
   }
-  #endif
+#endif
 
   sleep_ms(BOOT_TIME_TO_INIT_ms);
 
@@ -99,53 +100,50 @@ status_t system_init(void) {
   return STATUS_OK;
 }
 
-bool radio_callback(struct repeating_timer *t) {
-  radio_is_due = true;
+bool telemetry_callback(struct repeating_timer *t) {
+  telemetry_is_due = true;
   return true;
 }
-void create_radio_timer(system_state_t state) {
-  if (radio_callback_is_running) {
+void create_telemetry_timer(system_state_t state) {
+  if (telemetry_callback_is_running) {
     log_info("Callback is already running, cancelling");
-    cancel_repeating_timer(&radio_timer);
+    cancel_repeating_timer(&telemetry_timer);
   }
   log_info("Adding a repeating timer in state: %d", state);
   switch (state) {
     // duplicity fix later
   case STATE_RUN:
-    radio_callback_is_running = add_repeating_timer_ms(
-        RUN_STATE_PACKET_FREQUENCY_ms, &radio_callback, false, &radio_timer);
+    telemetry_callback_is_running =
+        add_repeating_timer_ms(RUN_STATE_PACKET_FREQUENCY_ms,
+                               &telemetry_callback, false, &telemetry_timer);
     break;
   case STATE_SAFE:
-    radio_callback_is_running = add_repeating_timer_ms(
-        SAFE_STATE_PACKET_FREQUENCY_ms, &radio_callback, false, &radio_timer);
+    telemetry_callback_is_running =
+        add_repeating_timer_ms(SAFE_STATE_PACKET_FREQUENCY_ms,
+                               &telemetry_callback, false, &telemetry_timer);
     break;
   case STATE_ERROR:
-    cancel_repeating_timer(&radio_timer);
-    radio_callback_is_running = false;
+    cancel_repeating_timer(&telemetry_timer);
+    telemetry_callback_is_running = false;
     break;
   default:
     log_warning("Entered unknown state");
     break;
   }
-  if (radio_callback_is_running) {
+  if (telemetry_callback_is_running) {
     log_success("Interrupt created sucessfully");
   } else {
     log_error("There has been an error creating the interrupt", STATUS_ERROR);
   }
 }
 
-
-static int microsd_testing = 0;
 void system_run(void) {
   log_info("Starting system run loop ...");
 
   packet_t system_packet;
   while (1) {
     if (state_machine_changed()) {
-      create_radio_timer(system_state_machine.current_state);
-    }else{
-      system_packet = create_packet(&system_state_machine, &system_ctx,
-                                    &sensors, &gps_data);
+      create_telemetry_timer(system_state_machine.current_state);
     }
 
     // @Note create a task with instead of log every loop
@@ -156,31 +154,21 @@ void system_run(void) {
     state_machine_step(&system_state_machine, &system_ctx);
     system_work();
 
-    if (radio_is_due) {
-      log_info("Radio transmission is due");
-      radio_is_due = false;
-      //send_data(&sensors, &gps_data, &system_ctx);
+    if (telemetry_is_due) {
+      log_info("Telemetry transmission is due");
+      telemetry_is_due = false;
+      // send_data(&sensors, &gps_data, &system_ctx);
 
       // @Note not good implementation change asap
-      #if SD_LOGGING_ENABLED
-      if (microsd_testing < 10) {
-        microsd_testing++;
-        if (microsd_start_recording() != STATUS_OK) {
-          log_error("MicroSD recording failed", STATUS_ERROR);
+      packet_t telemetry_packet = create_packet(
+          &system_state_machine, &system_ctx, &sensors, &gps_data);
+        status_t t_status = send_packet(&telemetry_packet);
+        if(t_status != STATUS_OK){
+          log_warning("Radio packet has failed");
         }
-
-        if (write_data_to_file(&system_ctx, &sensors, &gps_data) != STATUS_OK) {
-          log_error("MicroSD write failed", STATUS_ERROR);
-        }
-
-        log_info("MicroSD write test should be successful");
-        if (microsd_stop_recording() != STATUS_OK) {
-          log_error("MicroSD stop recording failed", STATUS_ERROR);
-        }
-      }else {
-        log_info("MicroSD write test completed");
-      }
-      #endif
+#if SD_LOGGING_ENABLED
+        write_packet(&telemetry_packet);
+#endif
     }
 
     // @Watchdog
