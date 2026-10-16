@@ -2,9 +2,6 @@
 #define __PACKET_H__
 
 #include "drivers/GPS/gps.h"
-#include "drivers/hmc5883l/hmc5883l.h"
-#include "sensors/sensors.h"
-#include "system/state_machine.h"
 typedef struct __attribute__((packed)) {
   // uint32 could potentionally hold packet ids for 24 days
   uint32_t packet_id;
