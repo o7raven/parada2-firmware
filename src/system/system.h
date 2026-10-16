@@ -11,6 +11,7 @@
 #include "config/system_config.h"
 #include "communication/radio.h"
 #include "drivers/GPS/gps.h"
+#include "telemetry/packet.h"
 
 #include "hardware/watchdog.h"
 #include <pico/time.h>
@@ -21,9 +22,9 @@ static system_context_t system_ctx;
 static sensors_t sensors;
 static gps_t gps_data;
 
-extern volatile bool radio_is_due;
-extern repeating_timer_t radio_timer;
-extern bool radio_callback_is_running;
+extern volatile bool telemetry_is_due;
+extern repeating_timer_t telemetry_timer;
+extern bool telemetry_callback_is_running;
 
 /* @brief Initializes the system and its components
  * @return STATUS_OK if initialization was successful, otherwise returns an error status
@@ -39,8 +40,8 @@ void system_work(void);
 
 void system_run(void);
 
-void create_radio_timer(system_state_t state);
+void create_telemetry_timer(system_state_t state);
 
-bool radio_callback(struct repeating_timer *t);
+bool telemetry_callback(struct repeating_timer *t);
 
 #endif //SYSTEM__H
