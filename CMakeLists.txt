@@ -59,6 +59,8 @@ add_executable(parada2
     src/system/state_machine.c
     src/system/system.c
 
+    src/telemetry/packet.c
+
     libs/bosch/bme280.c
 
 )
