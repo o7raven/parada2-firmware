@@ -10,3 +10,7 @@ status_t init_radio(system_context_t* ctx){
 
     return STATUS_NOT_IMPLEMENTED;
 }
+
+status_t send_packet(packet_t *sys_packet){
+    return STATUS_NOT_IMPLEMENTED;
+}
