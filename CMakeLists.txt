@@ -65,6 +65,14 @@ add_executable(parada2
 
 )
 
+
+set(NMEA_BUILD_STATIC_LIB ON CACHE BOOL "" FORCE)
+set(NMEA_BUILD_SHARED_LIB OFF CACHE BOOL "" FORCE)
+set(NMEA_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(NMEA_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+set(NMEA_WITH_MEMCHECK OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(libs/libnmea)
 add_subdirectory(libs/no-OS-FatFS-SD-SDIO-SPI-RPi-Pico/src build)
 
 pico_set_program_name(parada2 "parada2")
@@ -82,6 +90,8 @@ target_link_libraries(parada2
 target_include_directories(parada2 PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/src
         ${CMAKE_CURRENT_LIST_DIR}
+        ${CMAKE_CURRENT_LIST_DIR}/libs/libnmea/src/nmea
+        ${CMAKE_CURRENT_LIST_DIR}/libs/libnmea/src/parsers
 )
 
 # Add any user requested libraries
@@ -93,6 +103,7 @@ target_link_libraries(parada2
         hardware_watchdog
 
         no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
+        nmea
         )
 
 pico_add_extra_outputs(parada2)
