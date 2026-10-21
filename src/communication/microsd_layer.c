@@ -206,6 +206,7 @@ status_t find_next_file_number(uint32_t *next_file_number) {
 
 
 static int microsd_testing = 0;
+static int sync_interval = 0;
 status_t write_packet(packet_t *sys_packet){
   /*
   if (!recording) {
@@ -219,7 +220,6 @@ status_t write_packet(packet_t *sys_packet){
     return STATUS_NOT_IMPLEMENTED;
   }
     */
-  static int sync_interval = 0;
         if (microsd_testing < 10) {
           microsd_testing++;
           if (microsd_start_recording() != STATUS_OK) {
@@ -237,7 +237,7 @@ status_t write_packet(packet_t *sys_packet){
             if (microsd_stop_recording() != STATUS_OK) {
               log_error("MicroSD stop recording failed", STATUS_ERROR);
             }
-            if (sync_interval > 4) {
+            if (sync_interval++ > 4) {
               f_sync(&file);
               sync_interval = 0;
             }
