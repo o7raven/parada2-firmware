@@ -125,6 +125,7 @@ if (data != NULL) {
 
         // GGA fix je platny, pokud je kvalita nenulova
         gps_handler->valid = (gga->position_fix != 0);
+        ctx->gps_found = gps_handler->valid;
 
         log_info("GPS GGA: lat=%.6f lon=%.6f alt=%.1f "
                  "sats=%u fix=%u time=%s",
