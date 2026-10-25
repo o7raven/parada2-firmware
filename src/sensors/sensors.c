@@ -9,12 +9,16 @@
 
 status_t init_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
     ctx->sensors_ok = true;
+    ctx->bme280_ok = true;
+    ctx->imu_ok = true;
+    ctx->imu_ok = true;
 
     status_t init_status = STATUS_OK;
     if(configure_bme280() != STATUS_OK){
         log_error("BME280 config error", STATUS_SENSOR_ERROR_BME_CONFIG);
         init_status = STATUS_SENSOR_INIT_FAIL;
 
+        ctx->bme280_ok = false;
         ctx->sensors_ok = false;
     }
 
@@ -22,6 +26,7 @@ status_t init_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
         log_error("HMC config error",STATUS_SENSOR_ERROR_HMC_CONFIG);
         init_status = STATUS_SENSOR_INIT_FAIL;
 
+        ctx->hmc5883l_ok = false;
         ctx->sensors_ok = false;
     }
 
@@ -29,12 +34,18 @@ status_t init_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
         log_error("IMU config error",STATUS_SENSOR_ERROR_IMU_CONFIG);
         init_status = STATUS_SENSOR_INIT_FAIL;
 
+
+        ctx->imu_ok = false;
         ctx->sensors_ok = false;
     }
     return init_status;
 }
 
 status_t read_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
+    ctx->sensors_ok = true;
+    ctx->bme280_ok = true;
+    ctx->hmc5883l_ok = true;
+    ctx->imu_ok = true;
     log_info("Reading BME280 ...");
     status_t return_status = STATUS_OK;
 
@@ -46,6 +57,7 @@ status_t read_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
 
     if(bme280_scan(&sens_handler->bme280) != STATUS_OK){
         ctx->sensors_ok = false;
+        ctx->bme280_ok = false;
         log_warning("BME280 Reading faiure...");
         return_status = STATUS_SENSOR_ERROR_BME_READ;
     }else {
@@ -58,6 +70,7 @@ status_t read_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
 
     if(read_imu(&sens_handler->imu) != STATUS_OK){
         ctx->sensors_ok = false;
+        ctx->imu_ok = false;
         log_warning("IMU read failure");
         return_status = STATUS_SENSOR_ERROR_IMU_READ;
     }else{
@@ -72,6 +85,7 @@ status_t read_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
 
     if(read_hmc(&sens_handler->hmc) != STATUS_OK){
         ctx->sensors_ok = false;
+        ctx->hmc5883l_ok = false;
         log_error("HMC read failure",STATUS_SENSOR_ERROR_HMC_READ);
         return_status = STATUS_SENSOR_ERROR_HMC_READ;
     }else{
@@ -80,7 +94,9 @@ status_t read_sensors(sensors_t* sens_handler, sensors_context_t* ctx){
                    sens_handler->hmc.y_axis, sens_handler->hmc.z_axis);
     }
 
-
+    if(!(ctx->bme280_ok && ctx->hmc5883l_ok && ctx->imu_ok)){
+        ctx->sensors_ok = false;
+    }
     return return_status;
 }
 
