@@ -1,3 +1,4 @@
+#include "communication/logging.h"
 #include "config/system_config.h"
 #include "ff.h"
 #include "system/status.h"
@@ -203,11 +204,8 @@ status_t find_next_file_number(uint32_t *next_file_number) {
   return MICRO_SD_FILE_NUMBER_ERROR;
 }
 
-
-
-static int microsd_testing = 0;
 static int sync_interval = 0;
-status_t write_packet(packet_t *sys_packet){
+status_t write_packet(packet_t *sys_packet) {
   /*
   if (!recording) {
     return MICRO_SD_NOT_RECORDING;
@@ -215,57 +213,34 @@ status_t write_packet(packet_t *sys_packet){
   if (!mounted) {
     return MICRO_SD_NOT_MOUNTED;
   }
-  if(sys_packet == NULL){
-    // @Note status empty packet
-    return STATUS_NOT_IMPLEMENTED;
-  }
     */
-        if (microsd_testing < 10) {
-          microsd_testing++;
-          if (microsd_start_recording() != STATUS_OK) {
-            log_error("MicroSD recording failed", STATUS_ERROR);
-          }
-
-          int written = f_printf(&file, CSV_FORMAT,
-                                 CSV_FIRST(CSV_VALUE_FIRST, sys_packet)
-                                     CSV_REST(CSV_VALUE_REST, sys_packet));
-
-          if (written > 0) 
-            {
-              log_info("MicroSD write test should be successful");
-            }
-            if (microsd_stop_recording() != STATUS_OK) {
-              log_error("MicroSD stop recording failed", STATUS_ERROR);
-            }
-            if (sync_interval++ > 4) {
-              f_sync(&file);
-              sync_interval = 0;
-            }
-          } else {
-            log_info("MicroSD write test completed");
-          }
-
-        
-          return STATUS_NOT_IMPLEMENTED;
-}
-
-/*
-Possibly useless if solution used -> buffer data and write after Xs`
-status_t write_packet(packet_t *packet){
+  if (sys_packet == NULL) {
+    // @Note status empty packet
+    log_warning("An empty packet was passed into write_packet function!");
+    return MICOR_SD_EMPTY_PACKET;
+  }
   if (!recording) {
-    return MICRO_SD_NOT_RECORDING;
-  }
-  if (!mounted) {
-    return MICRO_SD_NOT_MOUNTED;
+    if (microsd_start_recording() != STATUS_OK) {
+      log_error("MicroSD recording failed", STATUS_ERROR);
+      return STATUS_ERROR;
+    }
   }
 
-  int written = f_printf(&file, "blabla");
+  int written = f_printf(&file, CSV_FORMAT,
+                         CSV_FIRST(CSV_VALUE_FIRST, sys_packet)
+                             CSV_REST(CSV_VALUE_REST, sys_packet));
 
-  if (written < 0) {
-    return MICRO_SD_WRITE;
+  if (written > 0) {
+    log_info("Written %d bytes onto microSD", written);
   }
-  log_info("Packet written to MicroSD: %d bytes", written);
-
+  if (sync_interval++ > 4) {
+    f_sync(&file);
+    sync_interval = 0;
+  }
+  if (microsd_stop_recording() != STATUS_OK) {
+    log_error("MicroSD stop recording failed", STATUS_ERROR);
+    return STATUS_ERROR;
+  }
+  return STATUS_OK;
 }
-  */
 #endif // SD_LOGGING_ENABLED
