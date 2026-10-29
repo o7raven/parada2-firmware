@@ -162,12 +162,15 @@ void system_run(void) {
       // @Note not good implementation change asap
       packet_t telemetry_packet = create_packet(
           &system_state_machine, &system_ctx, &sensors, &gps_data);
-        status_t t_status = send_packet(&telemetry_packet);
-        if(t_status != STATUS_OK){
-          log_warning("Radio packet has failed");
-        }
+      log_info("Packet no. %d has been created!", telemetry_packet.packet_id);
+      status_t t_status = send_packet(&telemetry_packet);
+      if (t_status != STATUS_OK) {
+        log_warning("Radio packet has failed");
+      }
 #if SD_LOGGING_ENABLED
-        write_packet(&telemetry_packet);
+      if (write_packet(&telemetry_packet) != STATUS_OK) {
+        log_warning("write_packet returned an error!");
+      }
 #endif
     }
 
