@@ -25,6 +25,7 @@
 #define PIN_MOSI 19
 
 // microsd
+// chip select bad name no reason to fix
 #define PIN_CS 17
 #define MICROSD_DRIVE "0:"
 #define DATA_DIRECTORY "data"
@@ -33,6 +34,7 @@
 #define SPI_BAUDRATE (12500 * 1000)
 
 /* RADIO */
+#define PIN_RADIO_CS 20
 #endif // HARDWARE_CONFIG__H
 
 
