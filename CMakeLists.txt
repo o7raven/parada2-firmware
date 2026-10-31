@@ -60,8 +60,12 @@ add_executable(parada2
     src/system/system.c
 
     src/telemetry/packet.c
+    src/telemetry/SX1278.c
+    src/telemetry/SX1278_hw.c
 
     libs/bosch/bme280.c
+
+    
 
 )
 
