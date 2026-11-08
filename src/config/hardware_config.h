@@ -35,7 +35,8 @@
 
 /* RADIO */
 #define PIN_RADIO_CS 20
-#endif // HARDWARE_CONFIG__H
+#define PIN_RADIO_DIO0 22
+#define PIN_RADIO_RESET 21
 
 
 /* GPS */
@@ -49,3 +50,5 @@
 
 /* HMC */
 #define HMC_GAIN_SETTINGS range_4 
+
+#endif // HARDWARE_CONFIG__H
