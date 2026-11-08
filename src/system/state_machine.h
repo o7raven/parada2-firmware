@@ -30,7 +30,6 @@ typedef struct{
     bool low_battery;
     bool critical_fault;
     bool gps_found;
-    bool radio_connected;
 } system_context_t;
 
 static bool sm_changed;
