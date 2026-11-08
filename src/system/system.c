@@ -18,6 +18,9 @@ volatile bool telemetry_is_due = false;
 repeating_timer_t telemetry_timer;
 bool telemetry_callback_is_running = false;
 
+static SX1278_hw_t sx_hw;
+static SX1278_t sx;
+
 status_t system_init(void) {
 
   // @Note debugging purposes (remove later)
@@ -53,6 +56,12 @@ status_t system_init(void) {
     log_success("Communication initialization successful");
   }
 
+  init_status = radio_init(&sx_hw, &sx, &system_ctx);
+  if (init_status != STATUS_OK) {
+    log_error("Radio initialization failed", init_status);
+  } else {
+    log_success("Radio initialization successful");
+  }
 #if SD_LOGGING_ENABLED
   init_status = microsd_init();
   if (init_status != STATUS_OK) {
@@ -163,7 +172,7 @@ void system_run(void) {
       packet_t telemetry_packet = create_packet(
           &system_state_machine, &system_ctx, &sensors, &gps_data);
       log_info("Packet no. %d has been created!", telemetry_packet.packet_id);
-      status_t t_status = send_packet(&telemetry_packet);
+      status_t t_status = send_packet(&sx,&telemetry_packet);
       if (t_status != STATUS_OK) {
         log_warning("Radio packet has failed");
       }
