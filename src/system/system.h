@@ -11,6 +11,8 @@
 #include "config/system_config.h"
 #include "communication/radio.h"
 #include "drivers/GPS/gps.h"
+#include "telemetry/SX1278.h"
+#include "telemetry/SX1278_hw.h"
 #include "telemetry/packet.h"
 
 #include "hardware/watchdog.h"
@@ -21,6 +23,9 @@ static state_machine_t system_state_machine;
 static system_context_t system_ctx;
 static sensors_t sensors;
 static gps_t gps_data;
+
+static SX1278_hw_t sx_hw;
+static SX1278_t sx;
 
 extern volatile bool telemetry_is_due;
 extern repeating_timer_t telemetry_timer;
