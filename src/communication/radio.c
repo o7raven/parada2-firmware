@@ -18,13 +18,12 @@ status_t send_packet(SX1278_t *sx, packet_t *sys_packet){
 
 
 
-    return STATUS_NOT_IMPLEMENTED;
+    return STATUS_OK;
 }
 
 status_t radio_init(SX1278_hw_t *hw, SX1278_t *sx, system_context_t* ctx){
 
     ctx->radio_ok = false;
-    ctx->radio_connected = false;
 
     hw->dio0.pin = PIN_RADIO_DIO0;
     hw->nss.pin = PIN_RADIO_CS;
@@ -41,5 +40,5 @@ status_t radio_init(SX1278_hw_t *hw, SX1278_t *sx, system_context_t* ctx){
     ctx->radio_ok = true;
         
 
-    return STATUS_NOT_IMPLEMENTED;
+    return STATUS_OK;
 }
