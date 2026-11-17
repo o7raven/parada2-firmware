@@ -32,12 +32,21 @@ status_t radio_init(SX1278_hw_t *hw, SX1278_t *sx, system_context_t* ctx){
 
     sx->hw = hw;
 
-    SX1278_init(sx, 43400000, SX1278_POWER_17DBM, SX1278_LORA_SF_7,
+    SX1278_init(sx, 434000000, SX1278_POWER_17DBM, SX1278_LORA_SF_7,
                 SX1278_LORA_BW_125KHZ, SX1278_LORA_CR_4_5, SX1278_LORA_CRC_EN,
                 10);
+    uint8_t version = SX1278_SPIRead(sx, 0x42);
+    log_info("SX1278 version: 0x%02X", version);
 
     // @Note Check if the radio is connected and working properly
-    ctx->radio_ok = true;
+    if (version == 0x12) {
+        log_success("SX1278 radio module is connected and working properly");
+        ctx->radio_ok = true;
+    } else {
+        log_error("SX1278 radio module is not connected or not working properly", STATUS_NOT_IMPLEMENTED);
+        ctx->radio_ok = false;
+        return STATUS_NOT_IMPLEMENTED;
+    }
         
 
     return STATUS_OK;
