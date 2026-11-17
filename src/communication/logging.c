@@ -58,6 +58,6 @@ void log_context(system_context_t *ctx) {
       "%d\n\tpower_ok:\t%d\n\tlow_battery:\t%d\n\tcritical_fault:\t%d\n\tgps_"
       "found:\t%d\n\tradio_connected:\t%d\n",
       ctx->sensors.sensors_ok, ctx->radio_ok, ctx->power_ok, ctx->low_battery,
-      ctx->critical_fault, ctx->gps_found, ctx->radio_connected);
+      ctx->critical_fault, ctx->gps_found);
   blink(LOG_BLINK_ms, 1);
 }

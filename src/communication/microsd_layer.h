@@ -35,7 +35,6 @@
     X("low_battery", "%u", (unsigned)(p)->system_ctx.low_battery, CSV_SEPARATOR) \
     X("critical_fault", "%u", (unsigned)(p)->system_ctx.critical_fault, CSV_SEPARATOR) \
     X("gps_found", "%u", (unsigned)(p)->system_ctx.gps_found, CSV_SEPARATOR) \
-    X("radio_connected", "%u", (unsigned)(p)->system_ctx.radio_connected, CSV_SEPARATOR) \
     X("bme280_ok", "%u", (unsigned)(p)->system_ctx.sensors.bme280_ok, CSV_SEPARATOR) \
     X("hmc5883l_ok", "%u", (unsigned)(p)->system_ctx.sensors.hmc5883l_ok, CSV_SEPARATOR) \
     X("imu_ok", "%u", (unsigned)(p)->system_ctx.sensors.imu_ok, CSV_SEPARATOR) \
