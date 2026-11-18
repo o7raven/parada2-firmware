@@ -62,9 +62,10 @@ add_executable(parada2
     src/telemetry/packet.c
     src/telemetry/SX1278.c
     src/telemetry/SX1278_hw.c
+    src/telemetry/sx127x_pico_spi.c
 
     libs/bosch/bme280.c
-
+    libs/sx127x/src/sx127x.c
     
 
 )
@@ -91,12 +92,16 @@ target_link_libraries(parada2
         pico_stdlib)
 
 # Add the standard include files to the build
+
+
 target_include_directories(parada2 PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/src
         ${CMAKE_CURRENT_LIST_DIR}
         ${CMAKE_CURRENT_LIST_DIR}/libs/libnmea/src/nmea
         ${CMAKE_CURRENT_LIST_DIR}/libs/libnmea/src/parsers
+        ${CMAKE_CURRENT_LIST_DIR}/libs/sx127x/include
 )
+
 
 # Add any user requested libraries
 target_link_libraries(parada2 
