@@ -20,23 +20,23 @@
 
 /* SPI */
 #define SPI_PORT spi0
-#define PIN_MISO 16
+#define PIN_MISO 20
 #define PIN_SCK  18
 #define PIN_MOSI 19
 
 // microsd
 // chip select bad name no reason to fix
-#define PIN_CS 17
+//#define PIN_CS 17
 #define MICROSD_DRIVE "0:"
 #define DATA_DIRECTORY "data"
 #define FILE_NAME_FORMAT "0:/data/data_%04lu.csv"
 
-#define SPI_BAUDRATE (12500 * 1000)
-
+//#define SPI_BAUDRATE (12500 * 1000)
+#define SPI_BAUDRATE (1000 * 1000)
 /* RADIO */
-#define PIN_RADIO_CS 20
-#define PIN_RADIO_DIO0 22
-#define PIN_RADIO_RESET 21
+#define PIN_RADIO_CS 17
+#define PIN_RADIO_DIO0 21
+#define PIN_RADIO_RESET 22
 
 
 /* GPS */
