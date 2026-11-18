@@ -44,6 +44,12 @@ typedef enum {
   MICRO_SD_FILE_STATUS_ERROR,
   MICOR_SD_EMPTY_PACKET,
   MICRO_SD_CSV_NAME_ERROR,
+
+  STATUS_RADIO_NOT_FOUND,
+  SX127X_ERR_INVALID_ARG,
+  SX127X_ERR_SPI,
+  SX127X_OK,
+  
   
 } status_t;
 // Expand the status_t typedef and split different modules into their own enums;
