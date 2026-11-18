@@ -11,6 +11,7 @@
 
 uint8_t SX1278_SPIRead(SX1278_t * module, uint8_t addr) {
 	uint8_t tmp;
+	SX1278_hw_SetNSS(module->hw, 0);
 	SX1278_hw_SPICommand(module->hw, addr);
 	tmp = SX1278_hw_SPIReadByte(module->hw);
 	SX1278_hw_SetNSS(module->hw, 1);
