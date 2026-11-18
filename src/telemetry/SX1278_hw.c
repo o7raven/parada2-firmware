@@ -15,8 +15,16 @@
 #define GPIO_PIN_SET 1
 #define GPIO_PIN_RESET 0
 void SX1278_hw_init(SX1278_hw_t *hw) {
-  SX1278_hw_SetNSS(hw, 1);
-  gpio_put(hw->reset.pin, 1);
+    gpio_init(hw->nss.pin);
+    gpio_set_dir(hw->nss.pin, GPIO_OUT);
+    gpio_put(hw->nss.pin, 1);
+
+    gpio_init(hw->reset.pin);
+    gpio_set_dir(hw->reset.pin, GPIO_OUT);
+    gpio_put(hw->reset.pin, 1);
+
+    gpio_init(hw->dio0.pin);
+    gpio_set_dir(hw->dio0.pin, GPIO_IN);
 }
 
 void SX1278_hw_SetNSS(SX1278_hw_t *hw, int value) {
@@ -24,12 +32,13 @@ void SX1278_hw_SetNSS(SX1278_hw_t *hw, int value) {
 }
 
 void SX1278_hw_Reset(SX1278_hw_t *hw) {
-  SX1278_hw_SetNSS(hw, 1);
+  SX1278_hw_SetNSS(hw, 0);
   gpio_put(hw->reset.pin, GPIO_PIN_RESET);
 
   SX1278_hw_DelayMs(1); // at least 100 us
 
   gpio_put(hw->reset.pin, GPIO_PIN_SET);
+  SX1278_hw_SetNSS(hw, 1);
 
   SX1278_hw_DelayMs(
       10); // delay should be 5 ms minimum according to chip manual
@@ -38,14 +47,15 @@ void SX1278_hw_Reset(SX1278_hw_t *hw) {
 void SX1278_hw_SPICommand(SX1278_hw_t *hw, uint8_t cmd) {
   SX1278_hw_SetNSS(hw, 0);
   spi_write_blocking(hw->spi, &cmd, 1);
+  SX1278_hw_SetNSS(hw, 1);
 }
 
 uint8_t SX1278_hw_SPIReadByte(SX1278_hw_t *hw) {
   uint8_t txByte = 0x00;
   uint8_t rxByte = 0x00;
-
   SX1278_hw_SetNSS(hw, 0);
   spi_read_blocking(hw->spi, txByte, &rxByte, 1);
+  SX1278_hw_SetNSS(hw, 1);
   return rxByte;
 }
 
