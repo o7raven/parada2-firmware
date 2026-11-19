@@ -44,19 +44,19 @@ void SX1278_hw_Reset(SX1278_hw_t *hw) {
       10); // delay should be 5 ms minimum according to chip manual
 }
 
-void SX1278_hw_SPICommand(SX1278_hw_t *hw, uint8_t cmd) {
-  SX1278_hw_SetNSS(hw, 0);
-  spi_write_blocking(hw->spi, &cmd, 1);
-  SX1278_hw_SetNSS(hw, 1);
+void SX1278_hw_SPICommand(SX1278_hw_t *hw, uint8_t cmd)
+{
+    spi_write_blocking(hw->spi, &cmd, 1);
 }
 
-uint8_t SX1278_hw_SPIReadByte(SX1278_hw_t *hw) {
-  uint8_t txByte = 0x00;
-  uint8_t rxByte = 0x00;
-  SX1278_hw_SetNSS(hw, 0);
-  spi_read_blocking(hw->spi, txByte, &rxByte, 1);
-  SX1278_hw_SetNSS(hw, 1);
-  return rxByte;
+uint8_t SX1278_hw_SPIReadByte(SX1278_hw_t *hw)
+{
+    uint8_t txByte = 0x00;
+    uint8_t rxByte = 0x00;
+
+    spi_write_read_blocking(hw->spi, &txByte, &rxByte, 1);
+
+    return rxByte;
 }
 
 void SX1278_hw_DelayMs(uint32_t msec) { sleep_ms(msec); }
