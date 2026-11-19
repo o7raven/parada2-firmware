@@ -40,11 +40,12 @@ status_t system_init(void) {
   log_error("Error log working", STATUS_DUMMY_ERROR);
   log_success("Success log working");
 
+  #if WATCHDOG_EN
   if (watchdog_caused_reboot()) {
     log_warning("Watchdog has caused a reboot!");
     sleep_ms(500);
   }
-
+  #endif
   log_info("Starting system initialization ...");
   sleep_ms(BOOT_TIME_TO_INIT_ms);
 
@@ -99,8 +100,10 @@ status_t system_init(void) {
 
   sleep_ms(BOOT_TIME_TO_INIT_ms);
   // @Watchdog
+  #if WATCHDOG_EN
   watchdog_enable(WATCHDOG_TIMEOUT_ms + DATA_COLLECTION_PERIOD_ms,
                   WATCHDOG_PAUSE_ON_DBG);
+  #endif
 
   log_success("Initialization complete");
   log_context(&system_ctx);
@@ -186,7 +189,9 @@ void system_run(void) {
     // @Watchdog
     sleep_ms(DATA_COLLECTION_PERIOD_ms);
 
+    #if WATCHDOG_EN
     watchdog_update();
+    #endif
   }
 }
 
