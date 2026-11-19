@@ -8,27 +8,33 @@
 
 #include "SX1278.h"
 #include <string.h>
+uint8_t SX1278_SPIRead(SX1278_t *module, uint8_t addr)
+{
+    uint8_t tmp;
 
-uint8_t SX1278_SPIRead(SX1278_t * module, uint8_t addr) {
-	uint8_t tmp;
-	SX1278_hw_SetNSS(module->hw, 0);
-	SX1278_hw_SPICommand(module->hw, addr);
-	tmp = SX1278_hw_SPIReadByte(module->hw);
-	SX1278_hw_SetNSS(module->hw, 1);
-	return tmp;
+    SX1278_hw_SetNSS(module->hw, 0);
+
+    SX1278_hw_SPICommand(module->hw, addr);
+    tmp = SX1278_hw_SPIReadByte(module->hw);
+
+    SX1278_hw_SetNSS(module->hw, 1);
+
+    return tmp;
 }
 
-void SX1278_SPIWrite(SX1278_t * module, uint8_t addr, uint8_t cmd) {
-	SX1278_hw_SetNSS(module->hw, 0);
-	SX1278_hw_SPICommand(module->hw, addr | 0x80);
-	SX1278_hw_SPICommand(module->hw, cmd);
-	SX1278_hw_SetNSS(module->hw, 1);
-}
+void SX1278_SPIWrite(SX1278_t *module, uint8_t addr, uint8_t cmd)
+{
+    SX1278_hw_SetNSS(module->hw, 0);
 
+    SX1278_hw_SPICommand(module->hw, addr | 0x80);
+    SX1278_hw_SPICommand(module->hw, cmd);
+
+    SX1278_hw_SetNSS(module->hw, 1);
+}
 void SX1278_SPIBurstRead(SX1278_t * module, uint8_t addr, uint8_t * rxBuf,
 		uint8_t length) {
 	uint8_t i;
-	if (length <= 1) {
+	if (length == 0) {
 		return;
 	} else {
 		SX1278_hw_SetNSS(module->hw, 0);
@@ -43,7 +49,7 @@ void SX1278_SPIBurstRead(SX1278_t * module, uint8_t addr, uint8_t * rxBuf,
 void SX1278_SPIBurstWrite(SX1278_t * module, uint8_t addr, uint8_t * txBuf,
 		uint8_t length) {
 	unsigned char i;
-	if (length <= 1) {
+	if (length == 0) {
 		return;
 	} else {
 		SX1278_hw_SetNSS(module->hw, 0);
