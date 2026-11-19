@@ -15,7 +15,9 @@ status_t send_packet(SX1278_t *sx, packet_t *sys_packet){
 
 
     log_info("Sending a packet of size %d bytes", packet_size);
-    lora_ret = SX1278_transmit(sx, (uint8_t*)sys_packet, packet_size, 10000);
+    //lora_ret = SX1278_transmit(sx, (uint8_t*)sys_packet, packet_size, 10000);
+    char* data = "ahoj";
+    lora_ret = SX1278_transmit(sx, (uint8_t*)data, 4, 3000);
     log_info("Lora transmission: %d", lora_ret);
 
 
