@@ -3,8 +3,10 @@
 #define SYSTEM_CONFIG__H
 
 // System Configuration
-#define FIRMWARE_VERSION "0.1"
-#define WATCHDOG_TIMEOUT_ms 3000
+#define FIRMWARE_VERSION "0.4"
+
+#define WATCHDOG_EN 1
+#define WATCHDOG_TIMEOUT_ms 30000
 #define WATCHDOG_PAUSE_ON_DBG 1
 #define BOOT_TIME_TO_INIT_ms 100
 
